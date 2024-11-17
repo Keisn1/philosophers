@@ -46,3 +46,16 @@
 - each philosopher has assigned a number from 1 to number_of_philosophers assigned to them
 - 1 sits next to 2 and number_of_philosophers, n sits next to n+1 and n-1 (modulo number_of_philosophers)
 ** logs
+*** state changes
+- X = number of the philosopher
+- timestamp_in_ms = current timestamp in millisecond
+#+begin_example
+timestamp_in_ms X has taken a fork
+timestamp_in_ms X is eating
+timestamp_in_ms X is sleeping
+timestamp_in_ms X is thinking
+timestamp_in_ms X died
+#+end_example
+- state messages shall not be mixed up with another message
+- a message that a philosopher died should not be displayed more than 10 ms after the actual death
+- no data races
