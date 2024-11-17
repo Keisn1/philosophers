@@ -1,3 +1,6 @@
 #+title: Philosophers
 
 * Table of contents :TOC:
+- [[#what-is-philosophers][What is Philosophers?]]
+
+* What is Philosophers?
