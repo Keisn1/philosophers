@@ -1,0 +1,48 @@
+:PROPERTIES:
+:ID:       fb8fa5b0-caaa-4a2e-b8a3-47e37be7e391
+:END:
+#+title: philosophers
+#+date: [2024-11-08 Fri 19:06]
+#+startup: overview
+
+* Problem
+- 1 or more *philosophers* sitting around a table
+- 3 exclusive states for each *philosopher*:
+  - *eat*
+  - *think*
+  - *sleep*
+- There are as many *forks* on the table as there are philosophers
+- A Philospher eats with *2 forks*: *left* and *right* of them
+
+- From eating to sleeping:
+  - when philosophers finished eating, they put down their *forks* and start *sleeping*
+- From sleeping to thinking:
+  - when they wake up, they start to think
+
+- The simulation stops when a philosopher dies of starvation
+- Philospher don't speak with eachother
+- No Philosopher knows if another Philosopher is about to die
+- Philosophers should not die
+
+[[file:imgs/dining-philosophers-tmb.jpg]]
+
+* Global rules
+- No global variables
+- no data races
+** Program arguments
+*** number of philosophers
+- the number of philosophers and forks
+*** time_to_die (miliseconds)
+- philosophers need to start eating in =time_to_die= ~milliseconds~ since the last time, if not they die
+*** time_to_eat
+- the time it takes for a philosopher to eat (~milliseconds~)
+- they will need to hold 2 forks during that time
+*** time_to_sleep
+- the time a philosopher will spend sleeping
+*** nbr of times that each philosopher needs to eat (optional argument)
+- if a philosopher has eaten number_of_times_each_philosopher_must_eat times, the simulation stops
+- if not specified, the simulation stops when a philosopher dies
+** numbering
+- each philosopher has assigned a number from 1 to number_of_philosophers assigned to them
+- 1 sits next to 2 and number_of_philosophers, n sits next to n+1 and n-1 (modulo number_of_philosophers)
+** logs
