@@ -11,5 +11,7 @@
 								nil t))))
 
  (nil . ((org-roam-directory . "/home/kay/workspace/philosophers/roam")
-		 (org-roam-db-location . "/home/kay/workspace/philosophers/roam.db")
-		 )))
+		 (org-roam-db-location . "/home/kay/workspace/philosophers/roam/roam.db")
+		 ))
+
+ )
