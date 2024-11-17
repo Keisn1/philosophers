@@ -1,4 +1,8 @@
 #+title: Philosophers
+#+macro: philosophers-cover [[file:cover-philosophers-bonus.png]]
+#+OPTIONS: ^:nil
+
+{{{philosophers-cover}}}
 
 * Table of contents :TOC:
 - [[#what-is-philosophers][What is Philosophers?]]
