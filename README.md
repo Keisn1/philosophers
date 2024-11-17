@@ -1,7 +1,3 @@
----
-title: Philosophers
----
-
 ![](cover-philosophers-bonus.png)
 
 <p align="center">

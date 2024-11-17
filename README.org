@@ -1,6 +1,6 @@
 #+TITLE: Philosophers
 #+MACRO: philosophers-cover [[file:cover-philosophers-bonus.png]]
-#+OPTIONS: ^:nil
+#+OPTIONS: ^:nil title:nil
 
 {{{philosophers-cover}}}
 
