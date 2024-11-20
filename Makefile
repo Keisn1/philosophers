@@ -5,7 +5,7 @@
 # @version 0.1
 #
 test-scenarios-build:
-	cc -Wall -Wextra -Werror -fsanitize=address philo/main.c -o philo/philo
+	cc -Wall -Wextra -Werror -fsanitize=address philo/ft_putnbr_ull_fd.c philo/ft_putchar_fd.c philo/ft_putstr_fd.c philo/main.c -o philo/philo
 
 test-sync-build:
 	cc -Wall -Wextra -Werror -fsanitize=address tests/sync_test/main.c -o tests/sync_test/sync_test
