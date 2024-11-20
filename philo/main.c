@@ -14,7 +14,11 @@ void dying_msg(int philo, unsigned long long timestamp) {
 
 }
 
-int main() {
+int main(int argc, char** argv) {
+
+	(void)argc;
+	unsigned long long timestamp = (unsigned long long)ft_atoi(argv[2]);
+
 	thinking_msg(1);
-	dying_msg(1, 100);
+	dying_msg(1, timestamp);
 }
