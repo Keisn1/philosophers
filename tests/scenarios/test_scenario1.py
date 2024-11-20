@@ -1,12 +1,19 @@
 import subprocess
+import pytest
 
 
-def test_scenario_1():
-    nbr_of_philosopher = 1
-    time_to_die = 100
-    time_to_eat = 1
-    time_to_sleep = 1
-    nbr_must_eat = 3  # number_of_times_each_philosopher_must_eat
+testdata = [
+    (1, 100, 0, 0, 1),
+    (1, 200, 0, 0, 1),
+]
+
+
+@pytest.mark.parametrize(
+    "nbr_of_philosopher,time_to_die,time_to_eat,time_to_sleep,nbr_must_eat", testdata
+)
+def test_scenario_1(
+    nbr_of_philosopher, time_to_die, time_to_eat, time_to_sleep, nbr_must_eat
+):
     process = subprocess.Popen(
         [
             "philo/philo",
@@ -25,4 +32,4 @@ def test_scenario_1():
     assert "1 is thinking\n" in line
 
     line = process.stdout.readline()
-    assert "100 1 died\n" == line
+    assert f"{time_to_die} 1 died\n" == line

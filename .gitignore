@@ -4,3 +4,4 @@
 /philo/philo
 /roam/roam.db
 /tests/integration_tests/__pycache__/*.pyc
+/tests/scenarios/__pycache__/*.pyc
