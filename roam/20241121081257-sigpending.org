@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       3322764d-5d5f-4b51-9f4a-942d8c23e6e9
+:END:
+#+title: sigpending
+#+date: [2024-11-21 Thu 08:12]
+#+startup: overview

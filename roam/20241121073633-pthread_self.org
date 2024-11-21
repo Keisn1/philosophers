@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       ce60c011-45bd-4d89-9f87-258d347bac46
+:END:
+#+title: pthread_self
+#+date: [2024-11-21 Thu 07:36]
+#+startup: overview

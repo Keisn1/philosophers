@@ -1,0 +1,13 @@
+:PROPERTIES:
+:ID:       80b61a84-c858-473f-a075-e24a3423aaa6
+:END:
+#+title: cancelation points
+#+date: [2024-11-21 Thu 07:46]
+#+startup: overview
+
+POSIX specifies that certain function must and certain functions may be cancelation points
+
+when a thread calls a function that is a cancelation point, the thread is canceled, ~if it fulfils following conditions~
+- thread is cancelable
+- cancelability type is defered
+- cancelation request is pending for the thread

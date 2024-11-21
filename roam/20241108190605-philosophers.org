@@ -59,3 +59,4 @@ timestamp_in_ms X died
 - state messages shall not be mixed up with another message
 - a message that a philosopher died should not be displayed more than 10 ms after the actual death
 - no data races
+* [[id:e7d0b201-6770-4f52-bfab-37d4d1c58931][pthreads]]

@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       f4ade28e-069a-4661-a42d-74695510dfa3
+:END:
+#+title: floating-point environment
+#+date: [2024-11-21 Thu 08:14]
+#+startup: overview
+
+man fenv

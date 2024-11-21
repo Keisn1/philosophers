@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       929817b2-9b9d-4d92-b67c-6087216c2c53
+:END:
+#+title: pthread_join
+#+date: [2024-11-21 Thu 07:38]
+#+startup: overview

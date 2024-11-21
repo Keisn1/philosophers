@@ -1,0 +1,11 @@
+:PROPERTIES:
+:ID:       0c163275-ea54-46ba-b12b-d4d70a4c96cf
+:END:
+#+title: restrict keyword
+#+date: [2024-11-21 Thu 08:01]
+#+startup: overview
+
+In C, the =restrict= keyword is used in pointer declarations to indicate that
+- for the lifetime of that pointer, it is the only pointer that accesses the object it points to
+
+- allows the compiler to optimize the code better because it can assume that the memory accessed through the pointer is not accessed by any other pointer, leading to potential performance improvements

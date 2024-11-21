@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       d6f88426-6d98-47b7-9c96-2fca1111a914
+:END:
+#+title: async-cancel-safe functions
+#+date: [2024-11-21 Thu 07:45]
+#+startup: overview
+
+- a function that can safely be called in an application where asynchonous cancelability is enabled ([[id:be5244d3-b1d9-4f84-ac56-ddde818901fc][pthread_setcancelstate]])

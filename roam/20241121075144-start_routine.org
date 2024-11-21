@@ -1,0 +1,10 @@
+:PROPERTIES:
+:ID:       bbda6387-2bb4-474e-ad21-20369dc40e63
+:END:
+#+title: start_routine
+#+date: [2024-11-21 Thu 07:51]
+#+startup: overview
+
+#+begin_src c
+void *(*start_routine)(void *)
+#+end_src

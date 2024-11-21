@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       1cd19368-4b17-46ce-abc2-0b0c169a4b54
+:END:
+#+title: pthread_cancel
+#+date: [2024-11-21 Thu 08:05]
+#+startup: overview

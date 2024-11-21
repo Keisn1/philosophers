@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       be5244d3-b1d9-4f84-ac56-ddde818901fc
+:END:
+#+title: pthread_setcancelstate
+#+date: [2024-11-21 Thu 07:43]
+#+startup: overview

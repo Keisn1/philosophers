@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       de4a4cf7-915c-4e75-8148-b8f26cf6e70f
+:END:
+#+title: pthread_exit
+#+date: [2024-11-21 Thu 08:03]
+#+startup: overview

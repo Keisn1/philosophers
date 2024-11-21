@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       e90e089b-e558-46ca-bda9-7433803f191a
+:END:
+#+title: pthread_sigmask
+#+date: [2024-11-21 Thu 08:12]
+#+startup: overview

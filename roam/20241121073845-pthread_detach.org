@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       dde21c90-ffe8-4644-8d4a-40eed4af9503
+:END:
+#+title: pthread_detach
+#+date: [2024-11-21 Thu 07:38]
+#+startup: overview

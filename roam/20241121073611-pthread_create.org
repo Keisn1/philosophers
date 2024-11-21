@@ -1,0 +1,43 @@
+:PROPERTIES:
+:ID:       c1ef2ad0-b452-403b-b8ec-f94caec3f4a4
+:END:
+#+title: pthread_create
+#+date: [2024-11-21 Thu 07:36]
+#+startup: overview
+
+#+begin_src c
+int pthread_create(pthread_t *restrict thread,
+				   const pthread_attr_t *restrict attr,
+				   void *(*start_routine)(void *),
+				   void *restrict arg);
+#+end_src
+
+- almost all pointers with [[id:0c163275-ea54-46ba-b12b-d4d70a4c96cf][restrict keyword]]
+- [[id:c0174cb4-bf02-4690-b1e0-3f52911ad1f9][phtread_t]] thread
+  - successful call stores [[id:c0174cb4-bf02-4690-b1e0-3f52911ad1f9][Thread ID]]  in thread
+  - used to refer to the thread in subsequent calls to other pthreads functions
+
+- starts a new thread in calling process
+- starts execution by invoking [[id:bbda6387-2bb4-474e-ad21-20369dc40e63][start_routine]]
+- arg is passed as the sole argument to [[id:bbda6387-2bb4-474e-ad21-20369dc40e63][start_routine]]
+- [[id:4f2a55ca-9456-46e7-ac61-7ac4f1c48a6a][pthread_attr_t]]
+
+* thread_termination
+1. calls [[id:de4a4cf7-915c-4e75-8148-b8f26cf6e70f][pthread_exit]] (specifying exit status value)
+2. returns from [[id:bbda6387-2bb4-474e-ad21-20369dc40e63][start_routine]]
+   - equivalent to calling [[id:de4a4cf7-915c-4e75-8148-b8f26cf6e70f][pthread_exit]] with the value supplied in return statement
+3. Canceled with [[id:1cd19368-4b17-46ce-abc2-0b0c169a4b54][pthread_cancel]]
+4. Any of the threads in the process calls [[id:8e141fab-394f-488b-869c-c231c2a04361][exit]], or main thread performs a return from _main_
+
+* Inheritance
+- copy of the creating thread's signal mask  ([[id:e90e089b-e558-46ca-bda9-7433803f191a][pthread_sigmask]])
+- set of pending signals for the new thread is empty ([[id:3322764d-5d5f-4b51-9f4a-942d8c23e6e9][sigpending]])
+- new thread does not inherit the creating thread's alternate signal stack ([[id:6933e02d-9a5f-4b42-94af-586f1db5eb1f][sigaltstack]])
+- inherits creating thread's [[id:f4ade28e-069a-4661-a42d-74695510dfa3][floating-point environment]]
+- initial value of CPU-time clock is 0
+** linux specific
+- inherits copies of calling thread's capability sets and CPU affinity mask
+
+* Return value
+- returns 0 on success
+- returns error number and content of *thread is undefined

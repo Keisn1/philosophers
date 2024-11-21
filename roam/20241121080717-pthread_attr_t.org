@@ -1,0 +1,10 @@
+:PROPERTIES:
+:ID:       4f2a55ca-9456-46e7-ac61-7ac4f1c48a6a
+:END:
+#+title: pthread_attr_t
+#+date: [2024-11-21 Thu 08:07]
+#+startup: overview
+
+- sturcture whose contents are used at thread creation time
+- initialized using [[id:030b227d-7354-406a-9da2-477fd5c84d06][pthread_att_init]]
+- if _attr_ is NULL, then thread is created with default attributes

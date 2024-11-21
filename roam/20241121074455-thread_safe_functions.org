@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       7891d3df-a06a-41fe-917d-657095cf8941
+:END:
+#+title: thread-safe functions
+#+date: [2024-11-21 Thu 07:44]
+#+startup: overview
+
+- a function that can safely be called from multiple threads at the same time

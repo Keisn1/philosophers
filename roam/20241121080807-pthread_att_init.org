@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       030b227d-7354-406a-9da2-477fd5c84d06
+:END:
+#+title: pthread_att_init
+#+date: [2024-11-21 Thu 08:08]
+#+startup: overview

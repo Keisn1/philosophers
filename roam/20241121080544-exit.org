@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       8e141fab-394f-488b-869c-c231c2a04361
+:END:
+#+title: exit
+#+date: [2024-11-21 Thu 08:05]
+#+startup: overview

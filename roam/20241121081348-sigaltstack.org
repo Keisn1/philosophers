@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       6933e02d-9a5f-4b42-94af-586f1db5eb1f
+:END:
+#+title: sigaltstack
+#+date: [2024-11-21 Thu 08:13]
+#+startup: overview
