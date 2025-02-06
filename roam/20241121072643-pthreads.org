@@ -6,15 +6,14 @@
 #+startup: overview
 
 - posix threads
-- single process can contain multiple threads,
+- single process can contain multiple threads
   - executing the same program
   - sharing the same global memory (data and heap segments)
   - each thread has its own stack
 
 * return value of most pthread_functions is 0 on success and error number on failure
-  - same meanings as error numbers returned in errno
-  - pthread_functions do not set errno
-
+- same meanings as error numbers returned in errno
+- pthread_functions do not set errno
 * Thread IDs
 :PROPERTIES:
 :ID:       c0174cb4-bf02-4690-b1e0-3f52911ad1f9
@@ -25,7 +24,6 @@
 - unique only within a process
 - may be reused after [[id:929817b2-9b9d-4d92-b67c-6087216c2c53][pthread_join]] or [[id:dde21c90-ffe8-4644-8d4a-40eed4af9503][pthread_detach]]
 - ~undefined behavior on usage of thread whose lifetime has ended~
-
 * [[id:7891d3df-a06a-41fe-917d-657095cf8941][thread-safe functions]]
 * [[id:d6f88426-6d98-47b7-9c96-2fca1111a914][async-cancel-safe functions]]
 * [[id:80b61a84-c858-473f-a075-e24a3423aaa6][cancelation points]]

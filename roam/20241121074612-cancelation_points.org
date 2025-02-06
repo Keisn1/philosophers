@@ -7,7 +7,7 @@
 
 POSIX specifies that certain function must and certain functions may be cancelation points
 
-when a thread calls a function that is a cancelation point, the thread is canceled, ~if it fulfils following conditions~
+when a thread calls a function that is a cancelation point, the thread is canceled, ~if it fulfills following conditions~
 - thread is cancelable
 - cancelability type is defered
 - cancelation request is pending for the thread

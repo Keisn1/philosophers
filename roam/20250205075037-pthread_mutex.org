@@ -1,0 +1,74 @@
+:PROPERTIES:
+:ID:       6518e9f0-25e4-450e-b160-40abf8ae7092
+:END:
+#+title: pthread_mutex
+#+date: [2025-02-05 Wed 07:50]
+#+startup: overview
+
+MUTual EXclusion
+
+* Types
+** pthread_mutex_t
+- can also be initialized statically using (so not with pthread_mutext_init -> see Example)
+  #+begin_src c
+pthread_mutex_t fastmutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t recmutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+pthread_mutex_t errchkmutex = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
+  #+end_src
+** pthread_mutexattr_t
+- linux threads only support one mutexattribute
+- if NULL, default attributes are used
+*** Mutex kind
+- determines whether it can be locked again by a thread that already owns it
+- the default kind is 'fast'
+**** fast
+- calling thread of pthread_mutex_lock is suspended until mutex is unlocked
+- unlock always returns it to the unlocked state
+**** recursive
+- succeeds and returns immediately
+- records the number of times the calling thread has locked the mutex
+- an equal number (= # calls to pthread_mutex_lock) of pthread_mutex_unlock operations must be performed before the mutex returns to the unlocked state
+- unlock decrements unlocking count
+**** error checking
+- pthread_mutex_lock returns immediately
+
+* Functions
+** pthread_mutex_init
+- initializes mutex object pointed to by mutex
+#+begin_src c
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
+#+end_src
+** pthread_mutex_lock
+#+begin_src c
+int pthread_mutex_lock(pthread_mutex_t *mutex);
+#+end_src
+** pthread_mutex_unlock
+- assumed to be locked and owned by calling thread
+- on 'error checking' and 'recursive', actually check at run-time that the mutex is locked on entrance and locked by the same thread that is now calling *pthread_mutex_unlock*
+*** fast
+- does not do any checks
+- allows to unlock by another owner
+*** recursive
+- unlock decrements unlocking count
+** pthread_mutex_destroy
+- frees resources it might hold
+- mutex must be unlocked on entrance
+- in Linux-Threads implementation, no resoures are associated with mutex objects
+  - therefore pthread_mutex_destroy doest nothing except checking that th emutex is unlocked
+* Errors
+** EINVAL (Error initialize value -> mutex)
+** EDEADLK (already locked by the calling thread)
+** EBUSY (mutex could not be acquired because it was currently locked)
+** EPERM (calling thread does not own the mutex)
+* Example
+- shared global variable that is protected by a mutex
+  #+begin_src c
+int x;
+pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
+  #+end_src
+  - All access and modifications should be bracketed by calls to *pthread_mutex_lock* and *pthread_mutex_unlock*
+    #+begin_src c
+pthread_mutex_lock(&mut);
+/* operate on x */
+pthread_mutex_unlock(&mut);
+    #+end_src

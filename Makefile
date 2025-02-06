@@ -10,8 +10,10 @@ FSANITIZE := -fsanitize=address
 
 SRC_FILES := $(wildcard philo/*.c)
 
+NAME := philosophers
+
 test-scenarios-build:
-	$(CC) $(CFLAGS) $(FSANITIZE) $(SRC_FILES) -o philo/philo
+	$(CC) $(CFLAGS) $(FSANITIZE) $(SRC_FILES) -o philosophers
 
 test-sync-build:
 	$(CC) $(CFLAGS) $(FSANITIZE) tests/sync_test/main.c -o tests/sync_test/sync_test
@@ -21,7 +23,6 @@ test:
 
 test-scenarios: test-scenarios-build
 	pytest tests/scenarios/
-
 
 sync-test: test-sync-build
 	pytest tests/sync_test/
