@@ -31,10 +31,10 @@ void* routine(void* arg) {
 /* 	pthread_t thread; */
 /* 	struct s_thread_info  *thread_info; */
 
-/* 	pthread_mutex_t mutex; */
-/* 	const pthread_mutexattr_t *mu_attr = "fast"; */
+/* 	/\* pthread_mutex_t mutex; *\/ */
+/* 	/\* const pthread_mutexattr_t *mu_attr = "fast"; *\/ */
 
-/* 	pthread_mutex_init(&mutex, mu_attr); */
+/* 	/\* pthread_mutex_init(&mutex, mu_attr); *\/ */
 /* 	thread_info = malloc( sizeof(*thread_info)); */
 /* 	if (thread_info == NULL) */
 /* 		exit(EXIT_FAILURE); */

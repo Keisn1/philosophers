@@ -7,3 +7,6 @@
 /tests/scenarios/__pycache__/*.pyc
 /philosophers
 /.cache/
+/philo/.cache/
+/philo/build/
+/philo/compile_commands.json

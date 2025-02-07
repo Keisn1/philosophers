@@ -17,7 +17,10 @@ project(philosophers)
 option(BUILD_TEST "Build tests" ON)
 option(BUILD_PHILO "Build philo" OFF)
 
-file(GLOB_RECURSE PHILO_SOURCES "philo/*.c")
+if(BUILD_PHILO)
+  message("Hello, world!")
+endif()
+file(GLOB PHILO_SOURCES "*.c")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -Wextra -fsanitize=address")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -fsanitize=address")
@@ -28,13 +31,12 @@ if(BUILD_TEST)
 
   add_executable(${UNITTEST_EXECUTABLE} ${PHILO_SOURCES} ${UNITTEST_FILES})
   target_link_libraries(${UNITTEST_EXECUTABLE} gtest gtest_main pthread gmock)
+  target_include_directories(${UNITTEST_EXECUTABLE} PRIVATE ".")
 
-  target_include_directories(${UNITTEST_EXECUTABLE} PRIVATE "philo")
   include(GoogleTest)
   gtest_discover_tests(${UNITTEST_EXECUTABLE})
 endif()
 
-file(GLOB PHILO_SOURCES "philo/*.c")
 if(BUILD_PHILO)
   set(PHILO "philo")
 
