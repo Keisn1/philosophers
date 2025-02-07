@@ -18,35 +18,36 @@ void dying_msg(int philo, unsigned long long timestamp) {
 }
 
 
-static void* routine(void* arg) {
+void* routine(void* arg) {
 	struct s_thread_info *tinfo = (struct s_thread_info*)arg;
 	thinking_msg(1);
 	dying_msg(1, tinfo->timestamp);
 	return NULL;
 }
 
-int main(int argc, char** argv) {
-	(void)argc;
-	pthread_t thread;
-	struct s_thread_info  *thread_info;
 
-	pthread_mutex_t mutex;
-	const pthread_mutexattr_t *mu_attr = "fast";
+/* int main(int argc, char** argv) { */
+/* 	(void)argc; */
+/* 	pthread_t thread; */
+/* 	struct s_thread_info  *thread_info; */
 
-	pthread_mutex_init(&mutex, mu_attr);
-	thread_info = malloc( sizeof(*thread_info));
-	if (thread_info == NULL)
-		exit(EXIT_FAILURE);
+/* 	pthread_mutex_t mutex; */
+/* 	const pthread_mutexattr_t *mu_attr = "fast"; */
 
-	thread_info->timestamp = (unsigned long long)ft_atoi(argv[2]);
+/* 	pthread_mutex_init(&mutex, mu_attr); */
+/* 	thread_info = malloc( sizeof(*thread_info)); */
+/* 	if (thread_info == NULL) */
+/* 		exit(EXIT_FAILURE); */
 
-	if(pthread_create(&thread, NULL, routine, thread_info))
-		exit(EXIT_FAILURE);
+/* 	thread_info->timestamp = (unsigned long long)ft_atoi(argv[2]); */
 
-	if (pthread_join(thread, NULL))
-		exit(EXIT_FAILURE);
+/* 	if(pthread_create(&thread, NULL, routine, thread_info)) */
+/* 		exit(EXIT_FAILURE); */
 
-	free(thread_info);
+/* 	if (pthread_join(thread, NULL)) */
+/* 		exit(EXIT_FAILURE); */
 
-	return 0;
-}
+/* 	free(thread_info); */
+
+/* 	return 0; */
+/* } */

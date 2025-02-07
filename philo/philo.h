@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <stddef.h>
 
+int write_so();
 typedef struct s_thread_info {
 	unsigned long long timestamp;
 } t_thread_info;

@@ -5,7 +5,11 @@
 #+date: [2025-02-05 Wed 07:50]
 #+startup: overview
 
+
 MUTual EXclusion
+#+begin_src c
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
+#+end_src
 
 * Types
 ** pthread_mutex_t
