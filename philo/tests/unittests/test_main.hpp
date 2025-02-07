@@ -3,9 +3,8 @@
 
 #include <gtest/gtest.h>
 
-
-// extern "C" {
-// #include "philo.h"
-// }
+extern "C" {
+#include "philo.h"
+}
 
 #endif // TEST_MAIN_H
