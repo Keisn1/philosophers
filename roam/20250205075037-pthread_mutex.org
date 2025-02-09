@@ -6,6 +6,7 @@
 #+startup: overview
 
 MUTual EXclusion
+- a lock that we set before using a shared resource
 
 * Types
 ** pthread_mutex_t

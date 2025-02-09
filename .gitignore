@@ -6,3 +6,4 @@
 /tests/integration_tests/__pycache__/*.pyc
 /tests/scenarios/__pycache__/*.pyc
 /philosophers
+/mutex_tests/a.out
