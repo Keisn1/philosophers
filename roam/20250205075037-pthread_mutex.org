@@ -10,6 +10,7 @@ MUTual EXclusion
 #+begin_src c
 int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
 #+end_src
+- a lock that we set before using a shared resource
 
 * Types
 ** pthread_mutex_t

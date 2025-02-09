@@ -12,15 +12,16 @@ int pthread_create(pthread_t *restrict thread,
 				   void *restrict arg);
 #+end_src
 
+- starts a new thread in calling process
+- starts execution by invoking [[id:bbda6387-2bb4-474e-ad21-20369dc40e63][start_routine]]
+- *arg* is passed as the sole argument to [[id:bbda6387-2bb4-474e-ad21-20369dc40e63][start_routine]]
+- [[id:4f2a55ca-9456-46e7-ac61-7ac4f1c48a6a][pthread_attr_t]]
+
 - almost all pointers with [[id:0c163275-ea54-46ba-b12b-d4d70a4c96cf][restrict keyword]]
 - [[id:c0174cb4-bf02-4690-b1e0-3f52911ad1f9][phtread_t]] thread
   - successful call stores [[id:c0174cb4-bf02-4690-b1e0-3f52911ad1f9][Thread ID]]  in thread
   - used to refer to the thread in subsequent calls to other pthreads functions
 
-- starts a new thread in calling process
-- starts execution by invoking [[id:bbda6387-2bb4-474e-ad21-20369dc40e63][start_routine]]
-- arg is passed as the sole argument to [[id:bbda6387-2bb4-474e-ad21-20369dc40e63][start_routine]]
-- [[id:4f2a55ca-9456-46e7-ac61-7ac4f1c48a6a][pthread_attr_t]]
 
 * thread_termination
 1. calls [[id:de4a4cf7-915c-4e75-8148-b8f26cf6e70f][pthread_exit]] (specifying exit status value)

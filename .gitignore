@@ -10,3 +10,4 @@
 /philo/.cache/
 /philo/build/
 /philo/compile_commands.json
+/mutex_tests/a.out
