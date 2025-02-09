@@ -16,5 +16,5 @@ size_t	ft_putchar_fd(char c, int fd);
 int	ft_atoi(const char *nptr);
 
 char* validate(char** argv);
-unsigned long long parse(char* arg);
+int parse(char* str, unsigned int *nbr);
 #endif // PHILO_H

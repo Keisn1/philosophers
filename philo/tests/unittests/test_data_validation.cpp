@@ -1,5 +1,6 @@
 #include "test_main.hpp"
 #include "gtest/gtest.h"
+#include <climits>
 #include <cstddef>
 #include <gtest/gtest.h>
 #include <vector>
@@ -37,18 +38,27 @@ INSTANTIATE_TEST_SUITE_P(allCases, dataValidationTestSuite,
 
 struct extractNumberTestParams {
     std::string arg;
-    unsigned long long want;
+    unsigned int want;
+    int want_err_code;
 };
 
 class extractNumberTestSuite : public ::testing::TestWithParam<extractNumberTestParams> {};
 
 TEST_P(extractNumberTestSuite, validParams) {
     extractNumberTestParams params = GetParam();
-    unsigned long long got = parse((char*)params.arg.c_str());
+    unsigned int got;
+    int got_err_code = parse((char*)params.arg.c_str(), &got);
+    ASSERT_EQ(params.want_err_code, got_err_code);
     ASSERT_EQ(params.want, got);
 }
 
 INSTANTIATE_TEST_SUITE_P(allCases, extractNumberTestSuite,
                          testing::Values(
-                             extractNumberTestParams{"10", 10}
+                             extractNumberTestParams{"10", 10, 0},
+                             extractNumberTestParams{"4294967296", 0, -1}, // UINT_MAX+1
+                             extractNumberTestParams{"4", 4, 0},
+                             extractNumberTestParams{"4294967295", UINT_MAX, 0},
+                             extractNumberTestParams{"0", 0, 0},
+                             extractNumberTestParams{"01", 1, 0},
+                             extractNumberTestParams{"000000004294967295", UINT_MAX, 0}
                          ));
