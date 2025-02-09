@@ -17,8 +17,8 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexa
 - can also be initialized statically using (so not with pthread_mutext_init -> see Example)
   #+begin_src c
 pthread_mutex_t fastmutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t recmutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
-pthread_mutex_t errchkmutex = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
+pthread_mutex_t recmutex = PTHREAD_MUTEX_RECURSIVE;
+pthread_mutex_t errchkmutex = PTHREAD_MUTEX_ERRORCHECK;
   #+end_src
 ** pthread_mutexattr_t
 - linux threads only support one mutexattribute
@@ -36,7 +36,6 @@ pthread_mutex_t errchkmutex = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
 - unlock decrements unlocking count
 **** error checking
 - pthread_mutex_lock returns immediately
-
 * Functions
 ** pthread_mutex_init
 - initializes mutex object pointed to by mutex
