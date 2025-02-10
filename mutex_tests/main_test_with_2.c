@@ -47,14 +47,13 @@ void *philo_loop(void *param) {
 		if (thread_data->protected->fork_available)
 		{
 			/* lock the fork and unlock data_mutex */
-			pthread_mutex_lock(thread_data->protected->fork);
 			printf("Thread %d got fork\n", thread_data->thread_num);
 			thread_data->protected->fork_available = false;
 			pthread_mutex_unlock(thread_data->protected->data_mutex);
 
 			int count2 = 0;
 			bool philo_dead = false;
-			while (count2 < 100 && !philo_dead) {
+			while (count2 < 10000 && !philo_dead) {
 				usleep(1 * 1000);
 				count2++;
 				pthread_mutex_lock(thread_data->protected->data_mutex);
@@ -65,7 +64,6 @@ void *philo_loop(void *param) {
 				break;
 
 			pthread_mutex_lock(thread_data->protected->data_mutex);
-			pthread_mutex_unlock(thread_data->protected->fork);
 			printf("Thread %d put down fork\n", thread_data->thread_num);
 			thread_data->protected->fork_available = true;
 			pthread_mutex_unlock(thread_data->protected->data_mutex);
