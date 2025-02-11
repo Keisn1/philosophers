@@ -18,7 +18,7 @@ void exit_perror(char *err_msg) {
 
 
 void *philo_loop(void *param) {
-	t_thread_data *thread_data = (t_thread_data*)param;
+	t_philo *thread_data = (t_philo*)param;
 
 	while (1) {
 		pthread_mutex_lock(thread_data->protected->data_mutex);
@@ -75,7 +75,7 @@ int main() {
 	if (!threads)
 		exit_perror("malloc");
 
-	t_thread_data *thread_data = init_threads_data(num_threads, base_time, time_to_die);
+	t_philo *thread_data = init_threads_data(num_threads, base_time, time_to_die);
 	for (int i = 0; i < num_threads; ++i)
 		pthread_create(&threads[i], NULL, philo_loop, &thread_data[i]);
 
