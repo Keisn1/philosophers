@@ -1,10 +1,6 @@
 /* test with 2 philosophers where one of them shall die in about 100 ms only one fork */
-#include <stdbool.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/time.h>
+#include "philo.h"
 
 unsigned long long get_timestamp(unsigned long long base_time) {
 	struct timeval tv;
@@ -18,25 +14,7 @@ void exit_perror(char *err_msg) {
 	exit(EXIT_FAILURE);
 }
 
-typedef struct s_params {
-	unsigned long long base_time;
-	unsigned long long time_to_die;
-} t_params;
 
-typedef struct s_protected {
-	bool philo_died;
-	bool fork_available;
-	pthread_mutex_t *data_mutex;
-	pthread_mutex_t *fork;
-
-} t_protected;
-
-typedef struct s_thread_data {
-	int thread_num;
-	unsigned long long time_last_meal;
-	t_protected *protected;
-	t_params params;
-} t_thread_data;
 
 
 void *philo_loop(void *param) {
@@ -86,31 +64,6 @@ void *philo_loop(void *param) {
 		}
 	}
 	return 0;
-}
-
-t_thread_data *init_threads_data(int num_threads, unsigned long long base_time, unsigned long long time_to_die) {
-	t_thread_data *threads_data = malloc(sizeof(t_thread_data) * num_threads);
-	t_params params = {base_time, time_to_die};
-
-
-	pthread_mutex_t *fork = malloc(sizeof(pthread_mutex_t));
-	pthread_mutex_init(fork, NULL);
-
-	pthread_mutex_t *data_mutex = malloc(sizeof(pthread_mutex_t));
-	pthread_mutex_init(data_mutex, NULL);
-
-	t_protected *protected = malloc(sizeof(t_protected));
-	protected->philo_died = false;
-	protected->fork_available = true;
-	protected->data_mutex = data_mutex;
-	protected->fork	 = fork;
-	for (int i = 0; i < num_threads; i++) {
-		threads_data[i].thread_num = i;
-		threads_data[i].time_last_meal = 0;
-		threads_data[i].protected = protected;
-		threads_data[i].params = params;
-	}
-	return threads_data;
 }
 
 int main() {
