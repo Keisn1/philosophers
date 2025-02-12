@@ -1,7 +1,4 @@
 #include "philo.h"
-#include <cstdlib>
-#include <limits.h>
-#include <stdio.h>
 
 char *validate(char **argv) {
 	int count = 0;
