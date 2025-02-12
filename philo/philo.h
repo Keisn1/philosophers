@@ -21,6 +21,7 @@ typedef struct s_shared_data {
 	bool philo_died;
 	pthread_mutex_t **forks;
 	pthread_mutex_t *stdout_lock;
+	pthread_mutex_t *check_lock;
 } t_shared_data;
 
 typedef struct s_philo {
@@ -32,9 +33,16 @@ typedef struct s_philo {
 	pthread_mutex_t *r_fork;
 } t_philo;
 
+typedef struct s_observer {
+	int num_philos;
+	t_philo *philos;
+	t_shared_data *shared;
+	t_params params;
+} t_observer;
+
 t_philo *init_philos(int num_philos);
 void set_philo_params(t_philo *philos, int num_philos, t_params params);
-unsigned long long get_timestamp(unsigned long long base_time);
+unsigned long long get_timestamp();
 
 void teardown(t_philo *philos, int num_philos, pthread_t *threads);
 void	*teardown_1(pthread_mutex_t **forks, int i, pthread_mutex_t *stdout_lock, t_shared_data *shared);

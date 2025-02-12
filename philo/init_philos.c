@@ -41,6 +41,11 @@ t_shared_data	*init_shared_data(int num_philos)
 	shared = malloc(sizeof(t_shared_data));
 	if (!shared)
 		return (teardown_6());
+
+	pthread_mutex_t *check_lock = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(check_lock, NULL);
+	shared->check_lock = check_lock;
+
 	stdout_lock = malloc(sizeof(pthread_mutex_t));
 	if (!stdout_lock)
 		return (teardown_5(shared));
@@ -60,11 +65,8 @@ t_philo	*set_philo_forks(t_philo *philos, int num_philos, t_shared_data *shared)
 
 	i = 0;
 	while (i < num_philos)
-	{
-		philos[i].philo_num = i+1;
-		philos[i].time_last_meal = 0;
 		philos[i++].shared = shared;
-	}
+
 	i = 0;
 	forks = shared->forks;
 	while (i < num_philos - 1)
@@ -97,6 +99,9 @@ t_philo	*init_philos(int num_philos)
 
 void set_philo_params(t_philo *philos, int num_philos, t_params params) {
 	int i = 0;
-	while (i < num_philos)
+	while (i < num_philos) {
+		philos[i].philo_num = i+1;
+		philos[i].time_last_meal = params.base_time;
 		philos[i++].params = params;
+	}
 }

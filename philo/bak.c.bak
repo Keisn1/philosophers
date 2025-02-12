@@ -1,0 +1,50 @@
+
+
+/* void *philo_loop(void *param) { */
+/* 	t_philo *thread_data = (t_philo*)param; */
+
+/* 	while (1) { */
+/* 		pthread_mutex_lock(thread_data->protected->data_mutex); */
+/* 		if (thread_data->protected->fork_available) */
+/* 		{ */
+/* 			/\* lock the fork and unlock data_mutex *\/ */
+/* 			printf("Thread %d got fork\n", thread_data->thread_num); */
+/* 			thread_data->protected->fork_available = false; */
+/* 			pthread_mutex_unlock(thread_data->protected->data_mutex); */
+
+/* 			int count2 = 0; */
+/* 			bool philo_dead = false; */
+/* 			while (count2 < 10000 && !philo_dead) { */
+/* 				usleep(1 * 1000); */
+/* 				count2++; */
+/* 				pthread_mutex_lock(thread_data->protected->data_mutex); */
+/* 				philo_dead = thread_data->protected->philo_died; */
+/* 				pthread_mutex_unlock(thread_data->protected->data_mutex); */
+/* 			} */
+/* 			if (philo_dead) */
+/* 				break; */
+
+/* 			pthread_mutex_lock(thread_data->protected->data_mutex); */
+/* 			printf("Thread %d put down fork\n", thread_data->thread_num); */
+/* 			thread_data->protected->fork_available = true; */
+/* 			pthread_mutex_unlock(thread_data->protected->data_mutex); */
+/* 		} else { */
+/* 			if (thread_data->protected->philo_died == true) { */
+/* 				pthread_mutex_unlock(thread_data->protected->data_mutex); */
+/* 				break; */
+/* 			} */
+
+/* 			unsigned long long time = get_timestamp(thread_data->params.base_time); */
+/* 			if (time - thread_data->time_last_meal > thread_data->params.time_to_die) { */
+/* 				thread_data->protected->philo_died = true; */
+/* 				printf("I'm dead: %d : %lld\n", thread_data->thread_num, time); */
+/* 				pthread_mutex_unlock(thread_data->protected->data_mutex); */
+/* 				break; */
+/* 			} */
+
+/* 			pthread_mutex_unlock(thread_data->protected->data_mutex); */
+/* 			usleep(1 * 1000); */
+/* 		} */
+/* 	} */
+/* 	return 0; */
+/* } */
