@@ -9,22 +9,22 @@
 #include <unistd.h>
 #include <stddef.h>
 #include <limits.h>
-#include <stdio.h>
 
 
 typedef struct s_params {
 	unsigned long long base_time;
 	unsigned long long time_to_die;
+	unsigned long long time_to_eat;
 } t_params;
 
 typedef struct s_shared_data {
 	bool philo_died;
-	pthread_mutex_t *stdout_lock;
 	pthread_mutex_t **forks;
+	pthread_mutex_t *stdout_lock;
 } t_shared_data;
 
 typedef struct s_philo {
-	int thread_num;
+	int philo_num;
 	unsigned long long time_last_meal;
 	t_shared_data *shared;
 	t_params params;
@@ -32,18 +32,22 @@ typedef struct s_philo {
 	pthread_mutex_t *r_fork;
 } t_philo;
 
-t_philo *init_philos(int num_threads, unsigned long long base_time, unsigned long long time_to_die);
+t_philo *init_philos(int num_philos);
+void set_philo_params(t_philo *philos, int num_philos, t_params params);
 unsigned long long get_timestamp(unsigned long long base_time);
+
+void teardown(t_philo *philos, int num_philos, pthread_t *threads);
+void	*teardown_1(pthread_mutex_t **forks, int i, pthread_mutex_t *stdout_lock, t_shared_data *shared);
+void	*teardown_2(pthread_mutex_t **forks, int i, pthread_mutex_t *stdout_lock, t_shared_data *shared);
+void	*teardown_3(pthread_mutex_t *stdout_lock, t_shared_data *shared);
+void	*teardown_4(pthread_mutex_t *stdout_lock, t_shared_data *shared);
+void	*teardown_5(t_shared_data *shared);
+void	*teardown_6(void);
 
 int write_so();
 typedef struct s_thread_info {
 	unsigned long long timestamp;
 } t_thread_info;
-
-void	ft_putnbr_ull_fd(unsigned long long nb, int fd);
-size_t	ft_putstr_fd(char *s, int fd);
-size_t	ft_putchar_fd(char c, int fd);
-int	ft_atoi(const char *nptr);
 
 char* validate(char** argv);
 int parse(char* str, unsigned int *nbr);

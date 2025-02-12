@@ -42,6 +42,7 @@ clean:
 fclean:
 	rm -rf $(OBJ_DIR)
 	rm -rf $(BUILD_DIR)
+	rm $(NAME)
 
 re: fclean all
 
