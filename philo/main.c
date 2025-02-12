@@ -89,19 +89,19 @@ int main() {
 	unsigned long long time_to_die = 50;
 	unsigned long long time_to_eat = 100;
 
-	pthread_t *threads = malloc(sizeof(pthread_t) * num_philos);
-	if (!threads)
+	pthread_t *philo_threads = malloc(sizeof(pthread_t) * num_philos);
+	if (!philo_threads)
 		exit_perror("malloc");
 
 	t_philo *philos = init_philos(num_philos);
 	set_philo_params(philos, num_philos, (t_params){base_time, time_to_die, time_to_eat});
 
 	for (int i = 0; i < num_philos; ++i)
-		pthread_create(&threads[i], NULL, philo_routine, &philos[i]);
+		pthread_create(&philo_threads[i], NULL, philo_routine, &philos[i]);
 
 	for (int i = 0; i < num_philos; ++i)
-		pthread_join(threads[i], NULL);
+		pthread_join(philo_threads[i], NULL);
 
-	teardown(philos, num_philos, threads);
+	teardown(philos, num_philos, philo_threads);
 	return 0;
 }
