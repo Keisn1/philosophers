@@ -6,7 +6,8 @@
 
 CC := cc
 CFLAGS := -Wall -Wextra -Werror
-FSANITIZE := -fsanitize=address
+FSANITIZE_A := -fsanitize=address
+FSANITIZE_T := -fsanitize=thread
 
 SRC_DIR :=
 OBJ_DIR := obj
@@ -20,7 +21,7 @@ NAME := philo
 all:		$(NAME)
 
 $(NAME): $(OBJ_FILES)
-	$(CC) $(CFLAGS) $(OBJ_FILES) $(INCLUDES) $(FSANITIZE) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ_FILES) $(INCLUDES) $(FSANITIZE_T) -o $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@

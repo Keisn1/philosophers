@@ -1,8 +1,34 @@
 #include "philo.h"
+#include <pthread.h>
 
 void exit_perror(char *err_msg) {
 	perror(err_msg);
 	exit(EXIT_FAILURE);
+}
+
+bool check_philo_died(t_philo *philo) {
+	pthread_mutex_lock(philo->shared->check_lock);
+	if (philo->shared->philo_died) {
+		pthread_mutex_unlock(philo->l_fork);
+		pthread_mutex_unlock(philo->r_fork);
+		pthread_mutex_unlock(philo->shared->check_lock);
+		return true;
+	}
+	pthread_mutex_unlock(philo->shared->check_lock);
+	return false;
+}
+
+void print_fork_msg(t_philo *philo) {
+	pthread_mutex_lock(philo->shared->stdout_lock);
+	printf("%lld %d has taken a fork\n", get_timestamp() - philo->params.base_time, philo->philo_num);
+	printf("%lld %d has taken a fork\n", get_timestamp() - philo->params.base_time, philo->philo_num);
+	pthread_mutex_unlock(philo->shared->stdout_lock);
+}
+
+void print_sleep_msg(t_philo *philo) {
+	pthread_mutex_lock(philo->shared->stdout_lock);
+	printf("%lld %d is sleeping\n", get_timestamp() - philo->params.base_time, philo->philo_num);
+	pthread_mutex_unlock(philo->shared->stdout_lock);
 }
 
 /* the 1 milisecond that uneven philos wait is to make it more synchronized and faster */
@@ -21,10 +47,9 @@ void *philo_routine(void *params) {
 			pthread_mutex_lock(philo->l_fork);
 			pthread_mutex_lock(philo->r_fork);
 		}
-		pthread_mutex_lock(philo->shared->stdout_lock);
-		printf("%lld %d has taken a fork\n", get_timestamp() - philo->params.base_time, philo->philo_num);
-		printf("%lld %d has taken a fork\n", get_timestamp() - philo->params.base_time, philo->philo_num);
-		pthread_mutex_unlock(philo->shared->stdout_lock);
+		if (check_philo_died(philo))
+			break;
+		print_fork_msg(philo);
 
 		bool philo_dead = false;
 		unsigned long long start = get_timestamp();
@@ -43,10 +68,8 @@ void *philo_routine(void *params) {
 		if (philo_dead)
 			break;
 
+		print_sleep_msg(philo);
 
-		pthread_mutex_lock(philo->shared->stdout_lock);
-		printf("%lld %d is sleeping\n", get_timestamp() - philo->params.base_time, philo->philo_num);
-		pthread_mutex_unlock(philo->shared->stdout_lock);
 		start = get_timestamp();
 		unsigned long long time_to_sleep = 100;
 		while ((get_timestamp() - start) < time_to_sleep) {
@@ -73,17 +96,23 @@ void *observer_routine(void *params) {
 			if ((get_timestamp() - observer->philos[i].time_last_meal) > observer->params.time_to_die) {
 				observer->shared->philo_died = true;
 				philo_dead = true;
+				pthread_mutex_lock(observer->shared->stdout_lock);
+				printf("%lld %d died\n", get_timestamp() - observer->params.base_time, i+1);
+				pthread_mutex_unlock(observer->shared->stdout_lock);
+				break;
 			}
 			i++;
 		}
 		pthread_mutex_unlock(observer->shared->check_lock);
+		if (observer->shared->philo_died)
+			break;
 		usleep(100);
 	}
 	return NULL;
 }
 
 int main() {
-	int num_philos = 2;
+	int num_philos = 200;
 
 	unsigned long long base_time = get_timestamp();
 	unsigned long long time_to_die = 50;
@@ -92,13 +121,21 @@ int main() {
 	pthread_t *philo_threads = malloc(sizeof(pthread_t) * num_philos);
 	if (!philo_threads)
 		exit_perror("malloc");
+	pthread_t observer_thread;
 
 	t_philo *philos = init_philos(num_philos);
 	set_philo_params(philos, num_philos, (t_params){base_time, time_to_die, time_to_eat});
+	t_observer observer;
+	observer.num_philos = num_philos;
+	observer.philos = philos;
+	observer.shared = philos[0].shared;
+	observer.params = philos[0].params;
 
+	pthread_create(&observer_thread, NULL, observer_routine, &observer);
 	for (int i = 0; i < num_philos; ++i)
 		pthread_create(&philo_threads[i], NULL, philo_routine, &philos[i]);
 
+	pthread_join(observer_thread, NULL);
 	for (int i = 0; i < num_philos; ++i)
 		pthread_join(philo_threads[i], NULL);
 

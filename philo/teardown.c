@@ -11,8 +11,8 @@ void teardown(t_philo *philos, int num_philos, pthread_t *threads)
 	free(all_forks);
 	pthread_mutex_destroy(philos[0].shared->stdout_lock);
 	free(philos[0].shared->stdout_lock);
+	free(philos[0].shared->check_lock);
 	free(philos[0].shared);
 	free(philos);
 	free(threads);
-
 }
