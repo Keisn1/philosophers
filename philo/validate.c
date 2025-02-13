@@ -17,16 +17,16 @@ char *validate(char **argv) {
 	return NULL;
 }
 
-int parse(char* str, unsigned int *nbr)  {
+int parse(char* str, unsigned long long *nbr)  {
 	*nbr = 0;
 	while (*str) {
-		unsigned int left_over = UINT_MAX / 10;
+		unsigned long long left_over = ULLONG_MAX / 10;
 		if (left_over < *nbr ) {
 			*nbr = 0;
 			return -1;
 		}
 		*nbr *= 10;
-		if (UINT_MAX - *nbr  <  (unsigned int)(*str - '0')) {
+		if (ULLONG_MAX - *nbr  <  (unsigned long long)(*str - '0')) {
 			*nbr = 0;
 			return -1;
 		}

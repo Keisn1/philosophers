@@ -15,6 +15,7 @@ typedef struct s_params {
 	unsigned long long base_time;
 	unsigned long long time_to_die;
 	unsigned long long time_to_eat;
+	unsigned long long time_to_sleep;
 } t_params;
 
 typedef struct s_shared_data {
@@ -58,5 +59,5 @@ typedef struct s_thread_info {
 } t_thread_info;
 
 char* validate(char** argv);
-int parse(char* str, unsigned int *nbr);
+int parse(char* str, unsigned long long *nbr);
 #endif // PHILO_H

@@ -38,7 +38,7 @@ INSTANTIATE_TEST_SUITE_P(allCases, dataValidationTestSuite,
 
 struct extractNumberTestParams {
     std::string arg;
-    unsigned int want;
+    unsigned long long want;
     int want_err_code;
 };
 
@@ -46,7 +46,7 @@ class extractNumberTestSuite : public ::testing::TestWithParam<extractNumberTest
 
 TEST_P(extractNumberTestSuite, validParams) {
     extractNumberTestParams params = GetParam();
-    unsigned int got;
+    unsigned long long got;
     int got_err_code = parse((char*)params.arg.c_str(), &got);
     ASSERT_EQ(params.want_err_code, got_err_code);
     ASSERT_EQ(params.want, got);
@@ -55,10 +55,12 @@ TEST_P(extractNumberTestSuite, validParams) {
 INSTANTIATE_TEST_SUITE_P(allCases, extractNumberTestSuite,
                          testing::Values(
                              extractNumberTestParams{"10", 10, 0},
-                             extractNumberTestParams{"4294967296", 0, -1}, // UINT_MAX+1
+                             extractNumberTestParams{"4294967296", 4294967296, 0},
                              extractNumberTestParams{"4", 4, 0},
                              extractNumberTestParams{"4294967295", UINT_MAX, 0},
                              extractNumberTestParams{"0", 0, 0},
                              extractNumberTestParams{"01", 1, 0},
-                             extractNumberTestParams{"000000004294967295", UINT_MAX, 0}
+                             extractNumberTestParams{"000000004294967295", UINT_MAX, 0},
+                             extractNumberTestParams{"18446744073709551615", ULLONG_MAX, 0},
+                             extractNumberTestParams{"18446744073709551616", 0, -1}
                          ));

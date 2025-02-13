@@ -83,7 +83,7 @@ bool eat(t_philo *philo) {
 bool sleeping(t_philo *philo) {
 	print_sleep_msg(philo);
 	unsigned long long start = get_timestamp();
-	unsigned long long time_to_sleep = 100;
+	unsigned long long time_to_sleep = philo->params.time_to_sleep;
 	while ((get_timestamp() - start) < time_to_sleep) {
 		pthread_mutex_lock(philo->shared->check_lock);
 		if (philo->shared->philo_died) {
@@ -139,12 +139,27 @@ void *observer_routine(void *params) {
 	return NULL;
 }
 
-int main() {
-	int num_philos = 200;
+int main(int argc, char** argv) {
+	(void)argc;
+	if (argc < 5) {
+		printf("too few arguments");
+		exit(EXIT_FAILURE);
+	}
+	if (argc < 5 || argc > 6) {
+		printf("too many arguments");
+		exit(EXIT_FAILURE);
+	}
+	char* err_msg;
+	err_msg = validate(argv+1);
+	if (err_msg) {
+		printf("%s\n", err_msg);
+		exit(EXIT_FAILURE);
+	}
 
-	unsigned long long base_time = get_timestamp();
-	unsigned long long time_to_die = 50;
-	unsigned long long time_to_eat = 100;
+	int num_philos = 4;
+	unsigned long long time_to_die = 310;
+	unsigned long long time_to_eat = 200;
+	unsigned long long time_to_sleep = 100;
 
 	pthread_t *philo_threads = malloc(sizeof(pthread_t) * num_philos);
 	if (!philo_threads)
@@ -152,7 +167,8 @@ int main() {
 	pthread_t observer_thread;
 
 	t_philo *philos = init_philos(num_philos);
-	set_philo_params(philos, num_philos, (t_params){base_time, time_to_die, time_to_eat});
+	unsigned long long base_time = get_timestamp();
+	set_philo_params(philos, num_philos, (t_params){base_time, time_to_die, time_to_eat, time_to_sleep});
 	t_observer observer;
 	observer.num_philos = num_philos;
 	observer.philos = philos;
