@@ -87,14 +87,14 @@ t_philo	*set_philo_fork(t_philo *philos, int num_philos, t_shared_data *shared)
 	fork_mutexes = shared->fork_mutexes;
 	while (i < num_philos - 1)
 	{
-		philos[i].r_fork = forks[i];
-		philos[i].l_fork = forks[i + 1];
+		philos[i].r_fork = &forks[i];
+		philos[i].l_fork = &forks[i + 1];
 		philos[i].r_fork_mutex = fork_mutexes[i];
 		philos[i].l_fork_mutex = fork_mutexes[i + 1];
 		i++;
 	}
-	philos[num_philos - 1].r_fork = forks[num_philos - 1];
-	philos[num_philos - 1].l_fork = forks[0];
+	philos[num_philos - 1].r_fork = &forks[num_philos - 1];
+	philos[num_philos - 1].l_fork = &forks[0];
 	philos[num_philos - 1].r_fork_mutex = fork_mutexes[num_philos - 1];
 	philos[num_philos - 1].l_fork_mutex = fork_mutexes[0];
 	return (philos);

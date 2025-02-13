@@ -1,5 +1,6 @@
 #include "philo.h"
 #include <pthread.h>
+#include <unistd.h>
 
 void exit_perror(char *err_msg) {
 	perror(err_msg);
@@ -9,8 +10,7 @@ void exit_perror(char *err_msg) {
 bool check_philo_died(t_philo *philo) {
 	pthread_mutex_lock(philo->shared->check_lock);
 	if (philo->shared->philo_died) {
-		pthread_mutex_unlock(philo->l_fork_mutex);
-		pthread_mutex_unlock(philo->r_fork_mutex);
+		give_up_forks(philo);
 		pthread_mutex_unlock(philo->shared->check_lock);
 		return true;
 	}
@@ -32,22 +32,47 @@ bool sleep_loop(t_philo *philo, unsigned long long start, unsigned long long tim
 		pthread_mutex_unlock(philo->shared->check_lock);
 		if (philo_dead)
 			return true;
-		usleep(100);
+		usleep(10);
 	}
 	return false;
 }
 
-bool eat(t_philo *philo) {
-	if (philo->philo_num % 2 == 0) {
-		pthread_mutex_lock(philo->r_fork_mutex);
-		pthread_mutex_lock(philo->l_fork_mutex);
-	} else {
-		pthread_mutex_lock(philo->l_fork_mutex);
-		pthread_mutex_lock(philo->r_fork_mutex);
+void get_forks(t_philo *philo) {
+	bool has_r_fork = false;
+	bool has_l_fork = false;
+	while (!has_r_fork || !has_l_fork) {
+		if (philo->philo_num % 2 == 0) {
+			if (!has_r_fork) {
+				has_r_fork = try_to_get_r_fork(philo);
+				if (has_r_fork)
+					print_fork_msg(philo);
+			}
+			if (!has_l_fork && has_r_fork) {
+				has_l_fork = try_to_get_l_fork(philo);
+				if (has_l_fork)
+					print_fork_msg(philo);
+			}
+		} else {
+			if (!has_l_fork) {
+				has_l_fork = try_to_get_l_fork(philo);
+				if (has_l_fork)
+					print_fork_msg(philo);
+			}
+			if (!has_r_fork && has_l_fork) {
+				has_r_fork = try_to_get_r_fork(philo);
+				if (has_r_fork)
+					print_fork_msg(philo);
+			}
+		}
+		usleep(100);
 	}
+	return;
+}
+
+bool eat(t_philo *philo) {
+	get_forks(philo);
 	if (check_philo_died(philo))
 		return true;
-	print_fork_msg(philo);
 
 	bool philo_dead = false;
 	unsigned long long start = get_timestamp();
@@ -55,9 +80,7 @@ bool eat(t_philo *philo) {
 
 	set_last_meal(philo, start);
 	philo_dead = sleep_loop(philo, start, time_to_eat);
-
-	pthread_mutex_unlock(philo->l_fork_mutex);
-	pthread_mutex_unlock(philo->r_fork_mutex);
+	give_up_forks(philo);
 	return philo_dead;
 }
 
@@ -72,7 +95,7 @@ bool sleeping(t_philo *philo) {
 			return true;
 		}
 		pthread_mutex_unlock(philo->shared->check_lock);
-		usleep(100);
+		usleep(10);
 	}
 	return false;
 }
@@ -95,60 +118,14 @@ void *philo_routine(void *params) {
 	return NULL;
 }
 
-void *observer_routine(void *params) {
-	t_observer *observer = (t_observer*)params;
-	bool philo_dead = false;
-	while (!philo_dead) {
-		int i = 0;
-		pthread_mutex_lock(observer->shared->check_lock);
-		while (i < observer->num_philos) {
-			if ((get_timestamp() - observer->philos[i].time_last_meal) > observer->params.time_to_die) {
-				observer->shared->philo_died = true;
-				philo_dead = true;
-				pthread_mutex_lock(observer->shared->stdout_lock);
-				printf("%lld %d died\n", get_timestamp() - observer->params.base_time, i+1);
-				pthread_mutex_unlock(observer->shared->stdout_lock);
-				break;
-			}
-			i++;
-		}
-		pthread_mutex_unlock(observer->shared->check_lock);
-		if (philo_dead)
-			break;
-		usleep(100);
-	}
-	return NULL;
-}
-
 int main(int argc, char** argv) {
-	(void)argc;
-	if (argc < 5) {
-		printf("too few arguments");
-		exit(EXIT_FAILURE);
-	}
-	if (argc < 5 || argc > 6) {
-		printf("too many arguments");
-		exit(EXIT_FAILURE);
-	}
-	char* err_msg;
-	err_msg = validate(argv+1);
-	if (err_msg) {
-		printf("%s\n", err_msg);
-		exit(EXIT_FAILURE);
-	}
+	check_args(argc, argv);
 
-	unsigned long long num_philos;
-	if (parse(argv[1], &num_philos)) {
-		printf("%s does not fit into unsigned long long\n", argv[1]);
-		exit(EXIT_FAILURE);
-	}
-	if (num_philos < 1) {
-		printf("Need to have at least one philosopher\n");
-		exit(EXIT_FAILURE);
-	}
-	unsigned long long time_to_die = 800;
-	unsigned long long time_to_eat = 200;
-	unsigned long long time_to_sleep = 200;
+
+	unsigned long long num_philos = get_num_philos(argv[1]);
+	unsigned long long time_to_die = get_ull(argv[2]);
+	unsigned long long time_to_eat = get_ull(argv[3]);
+	unsigned long long time_to_sleep = get_ull(argv[4]);
 
 	pthread_t *philo_threads = malloc(sizeof(pthread_t) * num_philos);
 	if (!philo_threads)
