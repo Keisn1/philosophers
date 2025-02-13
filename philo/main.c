@@ -32,10 +32,23 @@ bool sleep_loop(t_philo *philo, unsigned long long start, unsigned long long tim
 		pthread_mutex_unlock(philo->shared->check_lock);
 		if (philo_dead)
 			return true;
-		usleep(10);
+		usleep(100);
 	}
 	return false;
 }
+
+/* void get_fork_even_philo(t_philo *philo, bool *has_r_fork, bool *has_l_fork) { */
+/* 	if (!has_r_fork) { */
+/* 		*has_r_fork = try_to_get_r_fork(philo); */
+/* 		if (*has_r_fork) */
+/* 			print_fork_msg(philo); */
+/* 	} */
+/* 	if (!*has_l_fork && *has_r_fork) { */
+/* 		*has_l_fork = try_to_get_l_fork(philo); */
+/* 		if (*has_l_fork) */
+/* 			print_fork_msg(philo); */
+/* 	} */
+/* } */
 
 void get_forks(t_philo *philo) {
 	bool has_r_fork = false;
@@ -49,8 +62,10 @@ void get_forks(t_philo *philo) {
 			}
 			if (!has_l_fork && has_r_fork) {
 				has_l_fork = try_to_get_l_fork(philo);
-				if (has_l_fork)
+				if (has_l_fork) {
+					set_last_meal(philo, get_timestamp());
 					print_fork_msg(philo);
+				}
 			}
 		} else {
 			if (!has_l_fork) {
@@ -60,8 +75,10 @@ void get_forks(t_philo *philo) {
 			}
 			if (!has_r_fork && has_l_fork) {
 				has_r_fork = try_to_get_r_fork(philo);
-				if (has_r_fork)
+				if (has_r_fork) {
+					set_last_meal(philo, get_timestamp());
 					print_fork_msg(philo);
+				}
 			}
 		}
 		usleep(100);
@@ -78,7 +95,7 @@ bool eat(t_philo *philo) {
 	unsigned long long start = get_timestamp();
 	unsigned long long time_to_eat = philo->params.time_to_eat;
 
-	set_last_meal(philo, start);
+	/* set_last_meal(philo, start); */
 	philo_dead = sleep_loop(philo, start, time_to_eat);
 	give_up_forks(philo);
 	return philo_dead;
@@ -88,25 +105,12 @@ bool sleeping(t_philo *philo) {
 	print_sleep_msg(philo);
 	unsigned long long start = get_timestamp();
 	unsigned long long time_to_sleep = philo->params.time_to_sleep;
-	while ((get_timestamp() - start) < time_to_sleep) {
-		pthread_mutex_lock(philo->shared->check_lock);
-		if (philo->shared->philo_died) {
-			pthread_mutex_unlock(philo->shared->check_lock);
-			return true;
-		}
-		pthread_mutex_unlock(philo->shared->check_lock);
-		usleep(10);
-	}
-	return false;
+	return sleep_loop(philo, start, time_to_sleep);
 }
 
-/* the 1 milisecond that uneven philos wait is to make it more synchronized and faster */
-/* we need all of the even philosopher grab a fork to their right so that the uneven block on grabing the fork to the left*/
-/* otherwise an even philosopher might wait for too long, because there would be a combination of a fork where a philosopher could eat */
-/* but this combination is actually not realised */
 void *philo_routine(void *params) {
 	t_philo* philo = (t_philo*)params;
-	if (philo->philo_num % 2)
+	if (philo->philo_num % 2 == 0)
 		usleep(1000);
 	while (1) {
 		if (eat(philo))
@@ -120,7 +124,6 @@ void *philo_routine(void *params) {
 
 int main(int argc, char** argv) {
 	check_args(argc, argv);
-
 
 	unsigned long long num_philos = get_num_philos(argv[1]);
 	unsigned long long time_to_die = get_ull(argv[2]);
