@@ -9,32 +9,13 @@ void exit_perror(char *err_msg) {
 bool check_philo_died(t_philo *philo) {
 	pthread_mutex_lock(philo->shared->check_lock);
 	if (philo->shared->philo_died) {
-		pthread_mutex_unlock(philo->l_fork);
-		pthread_mutex_unlock(philo->r_fork);
+		pthread_mutex_unlock(philo->l_fork_mutex);
+		pthread_mutex_unlock(philo->r_fork_mutex);
 		pthread_mutex_unlock(philo->shared->check_lock);
 		return true;
 	}
 	pthread_mutex_unlock(philo->shared->check_lock);
 	return false;
-}
-
-void print_fork_msg(t_philo *philo) {
-	pthread_mutex_lock(philo->shared->stdout_lock);
-	printf("%lld %d has taken a fork\n", get_timestamp() - philo->params.base_time, philo->philo_num);
-	printf("%lld %d has taken a fork\n", get_timestamp() - philo->params.base_time, philo->philo_num);
-	pthread_mutex_unlock(philo->shared->stdout_lock);
-}
-
-void print_sleep_msg(t_philo *philo) {
-	pthread_mutex_lock(philo->shared->stdout_lock);
-	printf("%lld %d is sleeping\n", get_timestamp() - philo->params.base_time, philo->philo_num);
-	pthread_mutex_unlock(philo->shared->stdout_lock);
-}
-
-void print_thinking_msg(t_philo *philo) {
-	pthread_mutex_lock(philo->shared->stdout_lock);
-	printf("%lld %d is thinking\n", get_timestamp() - philo->params.base_time, philo->philo_num);
-	pthread_mutex_unlock(philo->shared->stdout_lock);
 }
 
 void set_last_meal(t_philo *philo, unsigned long long start) {
@@ -58,11 +39,11 @@ bool sleep_loop(t_philo *philo, unsigned long long start, unsigned long long tim
 
 bool eat(t_philo *philo) {
 	if (philo->philo_num % 2 == 0) {
-		pthread_mutex_lock(philo->r_fork);
-		pthread_mutex_lock(philo->l_fork);
+		pthread_mutex_lock(philo->r_fork_mutex);
+		pthread_mutex_lock(philo->l_fork_mutex);
 	} else {
-		pthread_mutex_lock(philo->l_fork);
-		pthread_mutex_lock(philo->r_fork);
+		pthread_mutex_lock(philo->l_fork_mutex);
+		pthread_mutex_lock(philo->r_fork_mutex);
 	}
 	if (check_philo_died(philo))
 		return true;
@@ -75,8 +56,8 @@ bool eat(t_philo *philo) {
 	set_last_meal(philo, start);
 	philo_dead = sleep_loop(philo, start, time_to_eat);
 
-	pthread_mutex_unlock(philo->l_fork);
-	pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(philo->l_fork_mutex);
+	pthread_mutex_unlock(philo->r_fork_mutex);
 	return philo_dead;
 }
 
@@ -165,9 +146,9 @@ int main(int argc, char** argv) {
 		printf("Need to have at least one philosopher\n");
 		exit(EXIT_FAILURE);
 	}
-	unsigned long long time_to_die = 310;
+	unsigned long long time_to_die = 800;
 	unsigned long long time_to_eat = 200;
-	unsigned long long time_to_sleep = 100;
+	unsigned long long time_to_sleep = 200;
 
 	pthread_t *philo_threads = malloc(sizeof(pthread_t) * num_philos);
 	if (!philo_threads)
