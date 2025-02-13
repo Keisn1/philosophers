@@ -156,7 +156,15 @@ int main(int argc, char** argv) {
 		exit(EXIT_FAILURE);
 	}
 
-	int num_philos = 4;
+	unsigned long long num_philos;
+	if (parse(argv[1], &num_philos)) {
+		printf("%s does not fit into unsigned long long\n", argv[1]);
+		exit(EXIT_FAILURE);
+	}
+	if (num_philos < 1) {
+		printf("Need to have at least one philosopher\n");
+		exit(EXIT_FAILURE);
+	}
 	unsigned long long time_to_die = 310;
 	unsigned long long time_to_eat = 200;
 	unsigned long long time_to_sleep = 100;
@@ -176,11 +184,11 @@ int main(int argc, char** argv) {
 	observer.params = philos[0].params;
 
 	pthread_create(&observer_thread, NULL, observer_routine, &observer);
-	for (int i = 0; i < num_philos; ++i)
+	for (unsigned long long i = 0; i < num_philos; ++i)
 		pthread_create(&philo_threads[i], NULL, philo_routine, &philos[i]);
 
 	pthread_join(observer_thread, NULL);
-	for (int i = 0; i < num_philos; ++i)
+	for (unsigned long long i = 0; i < num_philos; ++i)
 		pthread_join(philo_threads[i], NULL);
 
 	teardown(philos, num_philos, philo_threads);
