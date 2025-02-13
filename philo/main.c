@@ -31,6 +31,71 @@ void print_sleep_msg(t_philo *philo) {
 	pthread_mutex_unlock(philo->shared->stdout_lock);
 }
 
+void print_thinking_msg(t_philo *philo) {
+	pthread_mutex_lock(philo->shared->stdout_lock);
+	printf("%lld %d is thinking\n", get_timestamp() - philo->params.base_time, philo->philo_num);
+	pthread_mutex_unlock(philo->shared->stdout_lock);
+}
+
+void set_last_meal(t_philo *philo, unsigned long long start) {
+	pthread_mutex_lock(philo->shared->check_lock);
+	philo->time_last_meal = start;
+	pthread_mutex_unlock(philo->shared->check_lock);
+}
+
+bool sleep_loop(t_philo *philo, unsigned long long start, unsigned long long time) {
+	bool philo_dead = false;
+	while ((get_timestamp() - start) < time) {
+		pthread_mutex_lock(philo->shared->check_lock);
+		philo_dead = philo->shared->philo_died;
+		pthread_mutex_unlock(philo->shared->check_lock);
+		if (philo_dead)
+			return true;
+		usleep(100);
+	}
+	return false;
+}
+
+bool eat(t_philo *philo) {
+	if (philo->philo_num % 2 == 0) {
+		pthread_mutex_lock(philo->r_fork);
+		pthread_mutex_lock(philo->l_fork);
+	} else {
+		pthread_mutex_lock(philo->l_fork);
+		pthread_mutex_lock(philo->r_fork);
+	}
+	if (check_philo_died(philo))
+		return true;
+	print_fork_msg(philo);
+
+	bool philo_dead = false;
+	unsigned long long start = get_timestamp();
+	unsigned long long time_to_eat = philo->params.time_to_eat;
+
+	set_last_meal(philo, start);
+	philo_dead = sleep_loop(philo, start, time_to_eat);
+
+	pthread_mutex_unlock(philo->l_fork);
+	pthread_mutex_unlock(philo->r_fork);
+	return philo_dead;
+}
+
+bool sleeping(t_philo *philo) {
+	print_sleep_msg(philo);
+	unsigned long long start = get_timestamp();
+	unsigned long long time_to_sleep = 100;
+	while ((get_timestamp() - start) < time_to_sleep) {
+		pthread_mutex_lock(philo->shared->check_lock);
+		if (philo->shared->philo_died) {
+			pthread_mutex_unlock(philo->shared->check_lock);
+			return true;
+		}
+		pthread_mutex_unlock(philo->shared->check_lock);
+		usleep(100);
+	}
+	return false;
+}
+
 /* the 1 milisecond that uneven philos wait is to make it more synchronized and faster */
 /* we need all of the even philosopher grab a fork to their right so that the uneven block on grabing the fork to the left*/
 /* otherwise an even philosopher might wait for too long, because there would be a combination of a fork where a philosopher could eat */
@@ -40,48 +105,11 @@ void *philo_routine(void *params) {
 	if (philo->philo_num % 2)
 		usleep(1000);
 	while (1) {
-		if (philo->philo_num % 2 == 0) {
-			pthread_mutex_lock(philo->r_fork);
-			pthread_mutex_lock(philo->l_fork);
-		} else {
-			pthread_mutex_lock(philo->l_fork);
-			pthread_mutex_lock(philo->r_fork);
-		}
-		if (check_philo_died(philo))
+		if (eat(philo))
 			break;
-		print_fork_msg(philo);
-
-		bool philo_dead = false;
-		unsigned long long start = get_timestamp();
-		unsigned long long time_to_eat = philo->params.time_to_eat;
-		philo->time_last_meal = start;
-		while ((get_timestamp() - start) < time_to_eat) {
-			pthread_mutex_lock(philo->shared->check_lock);
-			philo_dead = philo->shared->philo_died;
-			pthread_mutex_unlock(philo->shared->check_lock);
-			if (philo_dead)
-				break;
-			usleep(100);
-		}
-		pthread_mutex_unlock(philo->l_fork);
-		pthread_mutex_unlock(philo->r_fork);
-		if (philo_dead)
+		if (sleeping(philo))
 			break;
-
-		print_sleep_msg(philo);
-
-		start = get_timestamp();
-		unsigned long long time_to_sleep = 100;
-		while ((get_timestamp() - start) < time_to_sleep) {
-			pthread_mutex_lock(philo->shared->check_lock);
-			philo_dead = philo->shared->philo_died;
-			pthread_mutex_unlock(philo->shared->check_lock);
-			if (philo_dead)
-				break;
-			usleep(100);
-		}
-		if (philo_dead)
-			break;
+		print_thinking_msg(philo);
 	}
 	return NULL;
 }
@@ -104,7 +132,7 @@ void *observer_routine(void *params) {
 			i++;
 		}
 		pthread_mutex_unlock(observer->shared->check_lock);
-		if (observer->shared->philo_died)
+		if (philo_dead)
 			break;
 		usleep(100);
 	}
