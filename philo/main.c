@@ -80,8 +80,17 @@ bool eat(t_philo *philo) {
 	if (get_forks(philo))
 		return true;;
 	philo_dead = sleep_loop(philo, get_timestamp(), philo->params.time_to_eat);
+	if (philo_dead) {
+		give_up_forks(philo);
+		return philo_dead;
+	}
+	philo->meals_eaten++;
+	pthread_mutex_lock(philo->shared->check_lock);
+	if (philo->meals_eaten == philo->params.must_eat)
+		philo->ate_enough = 1;
+	pthread_mutex_unlock(philo->shared->check_lock);
 	give_up_forks(philo);
-	return philo_dead;
+	return check_philo_died(philo);
 }
 
 bool sleeping(t_philo *philo) {
@@ -112,6 +121,17 @@ int main(int argc, char** argv) {
 	unsigned long long time_to_die = get_ull(argv[2]);
 	unsigned long long time_to_eat = get_ull(argv[3]);
 	unsigned long long time_to_sleep = get_ull(argv[4]);
+	unsigned long long must_eat;
+	if (argc == 6) {
+
+		must_eat = get_ull(argv[5]);
+		if (must_eat == 0) {
+			printf("Philosophers must eat!\n");
+			exit(EXIT_FAILURE);
+		}
+        }
+	else
+		must_eat = 0;
 
 	pthread_t *philo_threads = malloc(sizeof(pthread_t) * num_philos);
 	if (!philo_threads)
@@ -120,7 +140,7 @@ int main(int argc, char** argv) {
 
 	t_philo *philos = init_philos(num_philos);
 	unsigned long long base_time = get_timestamp();
-	set_philo_params(philos, num_philos, (t_params){base_time, time_to_die, time_to_eat, time_to_sleep});
+	set_philo_params(philos, num_philos, (t_params){base_time, time_to_die, time_to_eat, time_to_sleep, must_eat});
 	t_observer observer;
 	observer.num_philos = num_philos;
 	observer.philos = philos;

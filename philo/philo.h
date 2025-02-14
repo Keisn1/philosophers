@@ -16,6 +16,7 @@ typedef struct s_params {
 	unsigned long long time_to_die;
 	unsigned long long time_to_eat;
 	unsigned long long time_to_sleep;
+	unsigned long long must_eat;
 } t_params;
 
 typedef struct s_shared_data {
@@ -29,6 +30,8 @@ typedef struct s_shared_data {
 typedef struct s_philo {
 	int philo_num;
 	unsigned long long time_last_meal;
+	unsigned long long meals_eaten;
+	int ate_enough;
 	t_shared_data *shared;
 	t_params params;
 	bool *l_fork;

@@ -122,6 +122,8 @@ void set_philo_params(t_philo *philos, int num_philos, t_params params) {
 	while (i < num_philos) {
 		philos[i].philo_num = i+1;
 		philos[i].time_last_meal = params.base_time;
+		philos[i].meals_eaten = 0;
+		philos[i].ate_enough = false;
 		philos[i++].params = params;
 	}
 }
