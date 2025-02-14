@@ -20,7 +20,6 @@ typedef struct s_params {
 
 typedef struct s_shared_data {
 	bool philo_died;
-	bool *forks;
 	pthread_mutex_t **fork_mutexes;
 	pthread_mutex_t *stdout_lock;
 	pthread_mutex_t *check_lock;
@@ -31,8 +30,6 @@ typedef struct s_philo {
 	unsigned long long time_last_meal;
 	t_shared_data *shared;
 	t_params params;
-	bool *l_fork;
-	bool *r_fork;
 	pthread_mutex_t *l_fork_mutex;
 	pthread_mutex_t *r_fork_mutex;
 } t_philo;
@@ -68,10 +65,6 @@ int parse(char* str, unsigned long long *nbr);
 void print_fork_msg(t_philo *philo);
 void print_sleep_msg(t_philo *philo);
 void print_thinking_msg(t_philo *philo);
-
-bool try_to_get_r_fork(t_philo *philo);
-bool try_to_get_l_fork(t_philo *philo);
-void give_up_forks(t_philo *philo);
 
 void *observer_routine(void *params);
 void check_args(int argc, char** argv);

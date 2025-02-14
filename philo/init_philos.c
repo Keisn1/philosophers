@@ -35,7 +35,6 @@ t_shared_data	*init_shared_data(int num_philos)
 	t_shared_data	*shared;
 	pthread_mutex_t	*stdout_lock;
 	pthread_mutex_t	**fork_mutexes;
-	bool *forks;
 
 	shared = malloc(sizeof(t_shared_data));
 	if (!shared)
@@ -55,26 +54,14 @@ t_shared_data	*init_shared_data(int num_philos)
 		return (teardown_3(stdout_lock, shared));
 	shared->fork_mutexes = fork_mutexes;
 
-	forks = malloc(sizeof(bool) * num_philos);
-	if (!forks) {
-		teardown_3(stdout_lock, shared);
-		free(fork_mutexes);
-		return NULL;
-	}
-	int i = 0;
-	while (i < num_philos)
-		forks[i++]  = false;
-	shared->forks = forks;
 	shared->philo_died = false;
 	shared->stdout_lock = stdout_lock;
-
 	return (set_shared_data(shared, fork_mutexes, num_philos, stdout_lock));
 }
 
 t_philo	*set_philo_fork(t_philo *philos, int num_philos, t_shared_data *shared)
 {
 	int				i;
-	bool *forks;
 	pthread_mutex_t	**fork_mutexes;
 
 
@@ -83,18 +70,13 @@ t_philo	*set_philo_fork(t_philo *philos, int num_philos, t_shared_data *shared)
 		philos[i++].shared = shared;
 
 	i = 0;
-	forks = shared->forks;
 	fork_mutexes = shared->fork_mutexes;
 	while (i < num_philos - 1)
 	{
-		philos[i].r_fork = &forks[i];
-		philos[i].l_fork = &forks[i + 1];
 		philos[i].r_fork_mutex = fork_mutexes[i];
 		philos[i].l_fork_mutex = fork_mutexes[i + 1];
 		i++;
 	}
-	philos[num_philos - 1].r_fork = &forks[num_philos - 1];
-	philos[num_philos - 1].l_fork = &forks[0];
 	philos[num_philos - 1].r_fork_mutex = fork_mutexes[num_philos - 1];
 	philos[num_philos - 1].l_fork_mutex = fork_mutexes[0];
 	return (philos);

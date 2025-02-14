@@ -10,7 +10,8 @@ void exit_perror(char *err_msg) {
 bool check_philo_died(t_philo *philo) {
 	pthread_mutex_lock(philo->shared->check_lock);
 	if (philo->shared->philo_died) {
-		give_up_forks(philo);
+		pthread_mutex_unlock(philo->l_fork_mutex);
+		pthread_mutex_unlock(philo->r_fork_mutex);
 		pthread_mutex_unlock(philo->shared->check_lock);
 		return true;
 	}
@@ -37,51 +38,17 @@ bool sleep_loop(t_philo *philo, unsigned long long start, unsigned long long tim
 	return false;
 }
 
-/* void get_fork_even_philo(t_philo *philo, bool *has_r_fork, bool *has_l_fork) { */
-/* 	if (!has_r_fork) { */
-/* 		*has_r_fork = try_to_get_r_fork(philo); */
-/* 		if (*has_r_fork) */
-/* 			print_fork_msg(philo); */
-/* 	} */
-/* 	if (!*has_l_fork && *has_r_fork) { */
-/* 		*has_l_fork = try_to_get_l_fork(philo); */
-/* 		if (*has_l_fork) */
-/* 			print_fork_msg(philo); */
-/* 	} */
-/* } */
-
 void get_forks(t_philo *philo) {
-	bool has_r_fork = false;
-	bool has_l_fork = false;
-	while (!has_r_fork || !has_l_fork) {
-		if (philo->philo_num % 2 == 0) {
-			if (!has_r_fork) {
-				has_r_fork = try_to_get_r_fork(philo);
-				if (has_r_fork)
-					print_fork_msg(philo);
-			}
-			if (!has_l_fork && has_r_fork) {
-				has_l_fork = try_to_get_l_fork(philo);
-				if (has_l_fork) {
-					set_last_meal(philo, get_timestamp());
-					print_fork_msg(philo);
-				}
-			}
-		} else {
-			if (!has_l_fork) {
-				has_l_fork = try_to_get_l_fork(philo);
-				if (has_l_fork)
-					print_fork_msg(philo);
-			}
-			if (!has_r_fork && has_l_fork) {
-				has_r_fork = try_to_get_r_fork(philo);
-				if (has_r_fork) {
-					set_last_meal(philo, get_timestamp());
-					print_fork_msg(philo);
-				}
-			}
-		}
-		usleep(100);
+	if (philo->philo_num % 2 == 0) {
+		pthread_mutex_lock(philo->l_fork_mutex);
+		print_fork_msg(philo);
+		pthread_mutex_lock(philo->r_fork_mutex);
+		print_fork_msg(philo);
+	} else {
+		pthread_mutex_lock(philo->r_fork_mutex);
+		print_fork_msg(philo);
+		pthread_mutex_lock(philo->l_fork_mutex);
+		print_fork_msg(philo);
 	}
 	return;
 }
@@ -90,14 +57,13 @@ bool eat(t_philo *philo) {
 	get_forks(philo);
 	if (check_philo_died(philo))
 		return true;
-
+	set_last_meal(philo, get_timestamp());
 	bool philo_dead = false;
-	unsigned long long start = get_timestamp();
 	unsigned long long time_to_eat = philo->params.time_to_eat;
 
-	/* set_last_meal(philo, start); */
-	philo_dead = sleep_loop(philo, start, time_to_eat);
-	give_up_forks(philo);
+	philo_dead = sleep_loop(philo, philo->time_last_meal, time_to_eat);
+	pthread_mutex_unlock(philo->l_fork_mutex);
+	pthread_mutex_unlock(philo->r_fork_mutex);
 	return philo_dead;
 }
 
