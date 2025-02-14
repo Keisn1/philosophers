@@ -24,12 +24,10 @@ bool try_to_get_l_fork(t_philo *philo) {
 
 void give_up_forks(t_philo *philo) {
 	pthread_mutex_lock(philo->l_fork_mutex);
-	if (*(philo->l_fork) == true)
-		*(philo->l_fork) = false;
+	*(philo->l_fork) = false;
 	pthread_mutex_unlock(philo->l_fork_mutex);
 
 	pthread_mutex_lock(philo->r_fork_mutex);
-	if (*(philo->r_fork) == true)
-		*(philo->r_fork) = false;
+	*(philo->r_fork) = false;
 	pthread_mutex_unlock(philo->r_fork_mutex);
 }

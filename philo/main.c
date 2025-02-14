@@ -37,20 +37,7 @@ bool sleep_loop(t_philo *philo, unsigned long long start, unsigned long long tim
 	return false;
 }
 
-/* void get_fork_even_philo(t_philo *philo, bool *has_r_fork, bool *has_l_fork) { */
-/* 	if (!has_r_fork) { */
-/* 		*has_r_fork = try_to_get_r_fork(philo); */
-/* 		if (*has_r_fork) */
-/* 			print_fork_msg(philo); */
-/* 	} */
-/* 	if (!*has_l_fork && *has_r_fork) { */
-/* 		*has_l_fork = try_to_get_l_fork(philo); */
-/* 		if (*has_l_fork) */
-/* 			print_fork_msg(philo); */
-/* 	} */
-/* } */
-
-void get_forks(t_philo *philo) {
+bool get_forks(t_philo *philo) {
 	bool has_r_fork = false;
 	bool has_l_fork = false;
 	while (!has_r_fork || !has_l_fork) {
@@ -81,16 +68,17 @@ void get_forks(t_philo *philo) {
 				}
 			}
 		}
+		if (check_philo_died(philo)) 
+			return true;
 		usleep(100);
 	}
-	return;
+	return false;
 }
 
 bool eat(t_philo *philo) {
 	bool philo_dead = false;
-	get_forks(philo);
-	if (check_philo_died(philo))
-		return true;
+	if (get_forks(philo))
+		return true;;
 	philo_dead = sleep_loop(philo, get_timestamp(), philo->params.time_to_eat);
 	give_up_forks(philo);
 	return philo_dead;
