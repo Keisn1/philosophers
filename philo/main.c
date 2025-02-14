@@ -30,7 +30,7 @@ bool sleep_loop(t_philo *philo, unsigned long long start, unsigned long long tim
 		pthread_mutex_lock(philo->shared->check_lock);
 		philo_dead = philo->shared->philo_died;
 		pthread_mutex_unlock(philo->shared->check_lock);
-		if (philo_dead)
+		if (philo_dead) 
 			return true;
 		usleep(100);
 	}
@@ -63,8 +63,8 @@ void get_forks(t_philo *philo) {
 			if (!has_l_fork && has_r_fork) {
 				has_l_fork = try_to_get_l_fork(philo);
 				if (has_l_fork) {
-					set_last_meal(philo, get_timestamp());
 					print_fork_msg(philo);
+					set_last_meal(philo, get_timestamp());
 				}
 			}
 		} else {
@@ -76,8 +76,8 @@ void get_forks(t_philo *philo) {
 			if (!has_r_fork && has_l_fork) {
 				has_r_fork = try_to_get_r_fork(philo);
 				if (has_r_fork) {
-					set_last_meal(philo, get_timestamp());
 					print_fork_msg(philo);
+					set_last_meal(philo, get_timestamp());
 				}
 			}
 		}
@@ -87,16 +87,11 @@ void get_forks(t_philo *philo) {
 }
 
 bool eat(t_philo *philo) {
+	bool philo_dead = false;
 	get_forks(philo);
 	if (check_philo_died(philo))
 		return true;
-
-	bool philo_dead = false;
-	unsigned long long start = get_timestamp();
-	unsigned long long time_to_eat = philo->params.time_to_eat;
-
-	/* set_last_meal(philo, start); */
-	philo_dead = sleep_loop(philo, start, time_to_eat);
+	philo_dead = sleep_loop(philo, get_timestamp(), philo->params.time_to_eat);
 	give_up_forks(philo);
 	return philo_dead;
 }
