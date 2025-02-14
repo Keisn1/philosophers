@@ -115,7 +115,8 @@ void *philo_routine(void *params) {
 		if (sleeping(philo))
 			break;
 		print_thinking_msg(philo);
-		usleep(1000);
+		if ((philo->params.time_to_die - (get_timestamp() - philo->time_last_meal)) > 10)
+			usleep(1000);
 	}
 	return NULL;
 }
