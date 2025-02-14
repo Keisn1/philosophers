@@ -20,7 +20,12 @@ bool check_philo_died(t_philo *philo) {
 
 void set_last_meal(t_philo *philo, unsigned long long start) {
 	pthread_mutex_lock(philo->shared->check_lock);
-	philo->time_last_meal = start;
+	if (!philo->shared->philo_died) {
+		philo->time_last_meal = start;
+		pthread_mutex_lock(philo->shared->stdout_lock);
+		printf("%lld %d is eating\n", get_timestamp() - philo->params.base_time, philo->philo_num);
+		pthread_mutex_unlock(philo->shared->stdout_lock);
+	}
 	pthread_mutex_unlock(philo->shared->check_lock);
 }
 
@@ -79,7 +84,6 @@ bool eat(t_philo *philo) {
 	bool philo_dead = false;
 	if (get_forks(philo))
 		return true;;
-	print_eat_msg(philo);
 	philo_dead = sleep_loop(philo, get_timestamp(), philo->params.time_to_eat);
 	if (philo_dead) {
 		give_up_forks(philo);
@@ -91,7 +95,7 @@ bool eat(t_philo *philo) {
 		philo->ate_enough = 1;
 	pthread_mutex_unlock(philo->shared->check_lock);
 	give_up_forks(philo);
-	return check_philo_died(philo);
+	return false;
 }
 
 bool sleeping(t_philo *philo) {
