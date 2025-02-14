@@ -11,7 +11,7 @@ void *observer_routine(void *params) {
 		while (i < observer->num_philos) {
 			if (observer->philos[i].ate_enough)
 				num_philos_who_ate_enough++;
-			if ((get_timestamp() - observer->philos[i].time_last_meal) > observer->params.time_to_die) {
+			if ((get_timestamp() - observer->philos[i].time_last_meal) >= observer->params.time_to_die) {
 				observer->shared->philo_died = true;
 				philo_dead = true;
 				pthread_mutex_lock(observer->shared->stdout_lock);

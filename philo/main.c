@@ -23,7 +23,7 @@ void set_last_meal(t_philo *philo, unsigned long long start) {
 	if (!philo->shared->philo_died) {
 		philo->time_last_meal = start;
 		pthread_mutex_lock(philo->shared->stdout_lock);
-		printf("%lld %d is eating\n", get_timestamp() - philo->params.base_time, philo->philo_num);
+		printf("%lld %d is eating\n", philo->time_last_meal - philo->params.base_time, philo->philo_num);
 		pthread_mutex_unlock(philo->shared->stdout_lock);
 	}
 	pthread_mutex_unlock(philo->shared->check_lock);
@@ -139,6 +139,15 @@ int main(int argc, char** argv) {
 	}
 	else
 		must_eat = 0;
+	if (time_to_die < 1) {
+		exit(EXIT_FAILURE);
+	}
+	if (time_to_eat < 1) {
+		exit(EXIT_FAILURE);
+	}
+	if (time_to_sleep < 1) {
+		exit(EXIT_FAILURE);
+	}
 
 	pthread_t *philo_threads = malloc(sizeof(pthread_t) * num_philos);
 	if (!philo_threads)
