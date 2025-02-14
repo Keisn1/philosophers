@@ -71,6 +71,7 @@ int parse(char* str, unsigned long long *nbr);
 void print_fork_msg(t_philo *philo);
 void print_sleep_msg(t_philo *philo);
 void print_thinking_msg(t_philo *philo);
+void print_eat_msg(t_philo *philo);
 
 bool try_to_get_r_fork(t_philo *philo);
 bool try_to_get_l_fork(t_philo *philo);

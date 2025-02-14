@@ -79,6 +79,7 @@ bool eat(t_philo *philo) {
 	bool philo_dead = false;
 	if (get_forks(philo))
 		return true;;
+	print_eat_msg(philo);
 	philo_dead = sleep_loop(philo, get_timestamp(), philo->params.time_to_eat);
 	if (philo_dead) {
 		give_up_forks(philo);
@@ -110,6 +111,7 @@ void *philo_routine(void *params) {
 		if (sleeping(philo))
 			break;
 		print_thinking_msg(philo);
+		usleep(1000);
 	}
 	return NULL;
 }
@@ -129,7 +131,7 @@ int main(int argc, char** argv) {
 			printf("Philosophers must eat!\n");
 			exit(EXIT_FAILURE);
 		}
-        }
+	}
 	else
 		must_eat = 0;
 
