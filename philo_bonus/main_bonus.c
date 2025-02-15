@@ -18,63 +18,47 @@
 #define FORK_PILE_SEM "/philo_fork_pile_sem"
 #define STDOUT_LOCK_SEM "/philo_stdout_lock_sem"
 
-typedef struct s_shared_data {
-	sem_t *fork_pile;
-	sem_t *stdout_lock;
-	sem_t *dead_lock;
-} t_shared_data;
 
-void print_fork_msg(t_shared_data shared, t_params params, int philo_num) {
-	sem_wait(shared.stdout_lock);
-	printf("%lld %d has taken a fork\n", get_timestamp() - params.base_time, philo_num);
-	sem_post(shared.stdout_lock);
-}
 
-void print_eat_msg(t_shared_data shared, t_params params, int philo_num) {
-	sem_wait(shared.stdout_lock);
-	printf("%lld %d is eating\n", get_timestamp() - params.base_time, philo_num);
-	sem_post(shared.stdout_lock);
-}
+/* void observer_routine() { */
+/* 	unsigned long long time_to_die = 200; */
+/* 	while (1) { */
 
-void print_sleep_msg(t_shared_data shared, t_params params, int philo_num) {
-	sem_wait(shared.stdout_lock);
-	printf("%lld %d is sleeping\n", get_timestamp() - params.base_time, philo_num);
-	sem_post(shared.stdout_lock);
-}
+/* 		sem_wait(check_lock); */
+/* 		unsigned long long time_since_last_meal = shared->time_since_last_meal; */
+/* 		unsigned long long time = get_timestamp(); */
+/* 		if (time_since_last_meal >= params.time_to_die) */
+/* 			sem_wait(stdout_lock); */
+/* 			printf("%lld %d died\n", time - observer->params.base_time, idx + 1); */
+/* 			sem_post(dead_lock); */
+/* 		} */
+/* 		sem_post(check_lock); */
+/* 	} */
+/* } */
 
-void print_thinking_msg(t_shared_data shared, t_params params, int philo_num) {
-	sem_wait(shared.stdout_lock);
-	printf("%lld %d is thinking\n", get_timestamp() - params.base_time, philo_num);
-	sem_post(shared.stdout_lock);
-}
+void philo_routine(t_philo_data *philo_d) {
+	pthread_t sub_thread;
 
-void philo_routine(t_shared_data shared, int philo_num, t_params params) {
-	bool philo_died;
-	int num_forks = 0;
-	unsigned long long last_meal;
+	pthread_create(&sub_thread, NULL, observer_routine, philo_d);
 
-	philo_died = false;
-	last_meal = params.base_time;
-	while (!philo_died) {
+	while (1) {
 		/* eating */
-		while (num_forks != 2) {
-			sem_wait(shared.fork_pile);
-			print_fork_msg(shared, params, philo_num);
-			sem_wait(shared.fork_pile);
-			print_fork_msg(shared, params, philo_num);
-		}
+		sem_wait(philo_d->shared.fork_pile);
+		print_fork_msg(philo_d);
+		sem_wait(philo_d->shared.fork_pile);
+		print_fork_msg(philo_d);
 
-		print_eat_msg(shared, params, philo_num);
-		usleep(params.time_to_eat * 1000);
-		sem_post(shared.fork_pile);
-		sem_post(shared.fork_pile);
+		print_eat_msg(philo_d);
+		usleep(philo_d->params.time_to_eat * 1000);
+		sem_post(philo_d->shared.fork_pile);
+		sem_post(philo_d->shared.fork_pile);
 
 		/* sleeping */
-		print_sleep_msg(shared, params, philo_num);
-		usleep(params.time_to_sleep * 1000);
+		print_sleep_msg(philo_d);
+		usleep(philo_d->params.time_to_sleep * 1000);
 
 		/* thinking */
-		print_thinking_msg(shared, params, philo_num);
+		print_thinking_msg(philo_d);
 	}
 }
 
@@ -85,7 +69,6 @@ int	main(int argc, char **argv)
 
 	check_args(argc, argv);
 	params = get_params(argc, argv);
-
 
 	shared.fork_pile = sem_open(FORK_PILE_SEM, O_CREAT, 0644, params.num_philos);
 	if (shared.fork_pile == SEM_FAILED) {
@@ -103,9 +86,7 @@ int	main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-
 	sem_wait(shared.dead_lock);
-
 
 	sem_close(shared.fork_pile);
 	sem_unlink(FORK_PILE_SEM);
