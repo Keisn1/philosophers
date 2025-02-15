@@ -37,23 +37,6 @@ t_philo	*set_philo_fork(t_philo *philos, int num_philos, t_shared_data *shared)
 	return (philos);
 }
 
-t_philo	*init_philos(int num_philos)
-{
-	t_philo			*philos;
-	t_shared_data	*shared;
-
-	philos = malloc(sizeof(t_philo) * num_philos);
-	if (!philos)
-		return (NULL);
-	shared = init_shared_data(num_philos);
-	if (!shared)
-	{
-		free(philos);
-		return (NULL);
-	}
-	return (set_philo_fork(philos, num_philos, shared));
-}
-
 void	set_philo_params(t_philo *philos, t_params params)
 {
 	int	i;
@@ -67,4 +50,23 @@ void	set_philo_params(t_philo *philos, t_params params)
 		philos[i].ate_enough = false;
 		philos[i++].params = params;
 	}
+}
+
+t_philo	*init_philos(int num_philos, t_params params)
+{
+	t_philo			*philos;
+	t_shared_data	*shared;
+
+	philos = malloc(sizeof(t_philo) * num_philos);
+	if (!philos)
+		return (NULL);
+	shared = init_shared_data(num_philos);
+	if (!shared)
+	{
+		free(philos);
+		return (NULL);
+	}
+	philos = set_philo_fork(philos, num_philos, shared);
+	set_philo_params(philos, params);
+	return (philos);
 }

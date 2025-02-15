@@ -25,6 +25,8 @@ bool	check_due_time(t_observer *observer, int i)
 	unsigned long long	time_since_last_meal;
 
 	time = get_timestamp();
+	if (time < observer->params.base_time)
+		return (false);
 	time_since_last_meal = time - observer->philos[i].time_last_meal;
 	if (time_since_last_meal >= observer->params.time_to_die)
 	{

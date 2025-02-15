@@ -53,6 +53,7 @@ typedef struct s_philo
 	bool				*r_fork;
 	pthread_mutex_t		*l_fork_mutex;
 	pthread_mutex_t		*r_fork_mutex;
+	pthread_t			thread;
 }						t_philo;
 
 typedef struct s_observer
@@ -62,8 +63,7 @@ typedef struct s_observer
 	t_params			params;
 }						t_observer;
 
-t_philo					*init_philos(int num_philos);
-void					set_philo_params(t_philo *philos, t_params params);
+t_philo					*init_philos(int num_philos, t_params params);
 unsigned long long		get_timestamp(void);
 
 void					teardown_main(t_philo *philos, pthread_t *threads);
@@ -110,4 +110,9 @@ bool					sleep_loop(t_philo *philo, unsigned long long start,
 bool					sleeping(t_philo *philo);
 
 t_shared_data			*init_shared_data(int num_philos);
+
+void					wait_for_base_time(unsigned long long base_time);
+
+t_observer				get_observer(t_philo *philos);
+t_params				get_params(int argc, char **argv);
 #endif // PHILO_H

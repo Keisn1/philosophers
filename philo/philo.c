@@ -97,6 +97,7 @@ void	*philo_routine(void *params)
 	t_philo	*philo;
 
 	philo = (t_philo *)params;
+	wait_for_base_time(philo->params.base_time);
 	if (philo->philo_num % 2 == 0)
 		usleep(1000);
 	while (1)
