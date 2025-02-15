@@ -30,12 +30,33 @@ void print_fork_msg(t_shared_data shared, t_params params, int philo_num) {
 	sem_post(shared.stdout_lock);
 }
 
+void print_eat_msg(t_shared_data shared, t_params params, int philo_num) {
+	sem_wait(shared.stdout_lock);
+	printf("%lld %d is eating\n", get_timestamp() - params.base_time, philo_num);
+	sem_post(shared.stdout_lock);
+}
+
+void print_sleep_msg(t_shared_data shared, t_params params, int philo_num) {
+	sem_wait(shared.stdout_lock);
+	printf("%lld %d is sleeping\n", get_timestamp() - params.base_time, philo_num);
+	sem_post(shared.stdout_lock);
+}
+
+void print_thinking_msg(t_shared_data shared, t_params params, int philo_num) {
+	sem_wait(shared.stdout_lock);
+	printf("%lld %d is thinking\n", get_timestamp() - params.base_time, philo_num);
+	sem_post(shared.stdout_lock);
+}
+
 void philo_routine(t_shared_data shared, int philo_num, t_params params) {
 	bool philo_died;
 	int num_forks = 0;
+	unsigned long long last_meal;
 
 	philo_died = false;
+	last_meal = params.base_time;
 	while (!philo_died) {
+		/* eating */
 		while (num_forks != 2) {
 			sem_wait(shared.fork_pile);
 			print_fork_msg(shared, params, philo_num);
@@ -43,9 +64,17 @@ void philo_routine(t_shared_data shared, int philo_num, t_params params) {
 			print_fork_msg(shared, params, philo_num);
 		}
 
+		print_eat_msg(shared, params, philo_num);
+		usleep(params.time_to_eat * 1000);
+		sem_post(shared.fork_pile);
+		sem_post(shared.fork_pile);
 
-		sem_post(shared.fork_pile);
-		sem_post(shared.fork_pile);
+		/* sleeping */
+		print_sleep_msg(shared, params, philo_num);
+		usleep(params.time_to_sleep * 1000);
+
+		/* thinking */
+		print_thinking_msg(shared, params, philo_num);
 	}
 }
 
