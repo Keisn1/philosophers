@@ -25,6 +25,7 @@
 typedef struct s_params
 {
 	unsigned long long	base_time;
+	int					num_philos;
 	unsigned long long	time_to_die;
 	unsigned long long	time_to_eat;
 	unsigned long long	time_to_sleep;
@@ -56,19 +57,16 @@ typedef struct s_philo
 
 typedef struct s_observer
 {
-	int					num_philos;
 	t_philo				*philos;
 	t_shared_data		*shared;
 	t_params			params;
 }						t_observer;
 
 t_philo					*init_philos(int num_philos);
-void					set_philo_params(t_philo *philos, int num_philos,
-							t_params params);
+void					set_philo_params(t_philo *philos, t_params params);
 unsigned long long		get_timestamp(void);
 
-void					teardown_main(t_philo *philos, int num_philos,
-							pthread_t *threads);
+void					teardown_main(t_philo *philos, pthread_t *threads);
 void					*teardown_1(t_shared_data *shared, int i);
 void					*teardown_2(t_shared_data *shared, int i);
 void					*teardown_3(pthread_mutex_t *stdout_lock,
@@ -102,7 +100,7 @@ void					*observer_routine(void *params);
 void					*philo_routine(void *params);
 void					check_args(int argc, char **argv);
 
-unsigned long long		get_num_philos(char *argument);
+int						get_num_philos(char *argument);
 unsigned long long		get_ull(char *argument);
 
 bool					check_philo_died(t_philo *philo);

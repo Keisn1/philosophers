@@ -46,7 +46,7 @@ unsigned long long	get_ull(char *argument)
 	return (time);
 }
 
-unsigned long long	get_num_philos(char *argument)
+int	get_num_philos(char *argument)
 {
 	unsigned long long	num_philos;
 
@@ -56,5 +56,10 @@ unsigned long long	get_num_philos(char *argument)
 		printf("Need to have at least one philosopher\n");
 		exit(EXIT_FAILURE);
 	}
-	return (num_philos);
+	if (num_philos > INT_MAX)
+	{
+		printf("Too many philos\n");
+		exit(EXIT_FAILURE);
+	}
+	return ((int)num_philos);
 }

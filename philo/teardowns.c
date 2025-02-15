@@ -12,14 +12,14 @@
 
 #include "philo.h"
 
-void	teardown_main(t_philo *philos, int num_philos, pthread_t *threads)
+void	teardown_main(t_philo *philos, pthread_t *threads)
 {
 	int				i;
 	pthread_mutex_t	**all_forks;
 
 	i = 0;
 	all_forks = philos[0].shared->fork_mutexes;
-	while (i < num_philos)
+	while (i < philos[0].params.num_philos)
 	{
 		pthread_mutex_destroy(all_forks[i]);
 		free(all_forks[i++]);

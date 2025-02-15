@@ -54,12 +54,12 @@ t_philo	*init_philos(int num_philos)
 	return (set_philo_fork(philos, num_philos, shared));
 }
 
-void	set_philo_params(t_philo *philos, int num_philos, t_params params)
+void	set_philo_params(t_philo *philos, t_params params)
 {
 	int	i;
 
 	i = 0;
-	while (i < num_philos)
+	while (i < params.num_philos)
 	{
 		philos[i].philo_num = i + 1;
 		philos[i].time_last_meal = params.base_time;

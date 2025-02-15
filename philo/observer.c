@@ -44,14 +44,14 @@ bool	iterate_over_philos(t_observer *observer)
 	i = 0;
 	num_philos_who_ate_enough = 0;
 	philo_dead = false;
-	while (i < observer->num_philos)
+	while (i < observer->params.num_philos)
 	{
 		num_philos_who_ate_enough += increment_ate_enough(observer, i);
 		if (check_due_time(observer, i))
 			return (true);
 		i++;
 	}
-	if (num_philos_who_ate_enough == observer->num_philos)
+	if (num_philos_who_ate_enough == observer->params.num_philos)
 	{
 		observer->shared->philo_died = true;
 		philo_dead = true;
