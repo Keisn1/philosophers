@@ -12,6 +12,16 @@
 
 #include "philo.h"
 
+t_observer	get_observer(t_philo *philos)
+{
+	t_observer	observer;
+
+	observer.philos = philos;
+	observer.shared = philos[0].shared;
+	observer.params = philos[0].params;
+	return (observer);
+}
+
 int	increment_ate_enough(t_observer *observer, int i)
 {
 	if (observer->philos[i].ate_enough)
