@@ -34,35 +34,33 @@ void	teardown_main(t_philo *philos, int num_philos, pthread_t *threads)
 	free(threads);
 }
 
-void	*teardown_1(pthread_mutex_t **forks, int i,
-		pthread_mutex_t *stdout_lock, t_shared_data *shared)
+void	*teardown_1(t_shared_data *shared, int i)
 {
 	printf("Allocation failed\n");
 	while (i-- > 0)
 	{
-		pthread_mutex_destroy(forks[i]);
-		free(forks[i]);
+		pthread_mutex_destroy(shared->fork_mutexes[i]);
+		free(shared->fork_mutexes[i]);
 	}
-	free(forks);
-	pthread_mutex_destroy(stdout_lock);
-	free(stdout_lock);
+	free(shared->fork_mutexes);
+	pthread_mutex_destroy(shared->stdout_lock);
+	free(shared->stdout_lock);
 	free(shared);
 	return (NULL);
 }
 
-void	*teardown_2(pthread_mutex_t **forks, int i,
-		pthread_mutex_t *stdout_lock, t_shared_data *shared)
+void	*teardown_2(t_shared_data *shared, int i)
 {
 	printf("Mutex initialization failed\n");
-	free(forks[i]);
+	free(shared->fork_mutexes[i]);
 	while (i-- > 0)
 	{
-		pthread_mutex_destroy(forks[i]);
-		free(forks[i]);
+		pthread_mutex_destroy(shared->fork_mutexes[i]);
+		free(shared->fork_mutexes[i]);
 	}
-	free(forks);
-	pthread_mutex_destroy(stdout_lock);
-	free(stdout_lock);
+	free(shared->fork_mutexes);
+	pthread_mutex_destroy(shared->stdout_lock);
+	free(shared->stdout_lock);
 	free(shared);
 	return (NULL);
 }

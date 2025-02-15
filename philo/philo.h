@@ -69,12 +69,8 @@ unsigned long long		get_timestamp(void);
 
 void					teardown_main(t_philo *philos, int num_philos,
 							pthread_t *threads);
-void					*teardown_1(pthread_mutex_t **forks, int i,
-							pthread_mutex_t *stdout_lock,
-							t_shared_data *shared);
-void					*teardown_2(pthread_mutex_t **forks, int i,
-							pthread_mutex_t *stdout_lock,
-							t_shared_data *shared);
+void					*teardown_1(t_shared_data *shared, int i);
+void					*teardown_2(t_shared_data *shared, int i);
 void					*teardown_3(pthread_mutex_t *stdout_lock,
 							t_shared_data *shared);
 void					*teardown_4(pthread_mutex_t *stdout_lock,
@@ -115,5 +111,5 @@ bool					sleep_loop(t_philo *philo, unsigned long long start,
 							unsigned long long time);
 bool					sleeping(t_philo *philo);
 
-t_shared_data	*init_shared_data(int num_philos);
+t_shared_data			*init_shared_data(int num_philos);
 #endif // PHILO_H

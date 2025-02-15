@@ -15,25 +15,23 @@
 t_philo	*set_philo_fork(t_philo *philos, int num_philos, t_shared_data *shared)
 {
 	int				i;
-	bool			*forks;
 	pthread_mutex_t	**fork_mutexes;
 
 	i = 0;
 	while (i < num_philos)
 		philos[i++].shared = shared;
 	i = 0;
-	forks = shared->forks;
 	fork_mutexes = shared->fork_mutexes;
 	while (i < num_philos - 1)
 	{
-		philos[i].r_fork = &forks[i];
-		philos[i].l_fork = &forks[i + 1];
+		philos[i].r_fork = &shared->forks[i];
+		philos[i].l_fork = &shared->forks[i + 1];
 		philos[i].r_fork_mutex = fork_mutexes[i];
 		philos[i].l_fork_mutex = fork_mutexes[i + 1];
 		i++;
 	}
-	philos[num_philos - 1].r_fork = &forks[num_philos - 1];
-	philos[num_philos - 1].l_fork = &forks[0];
+	philos[num_philos - 1].r_fork = &shared->forks[num_philos - 1];
+	philos[num_philos - 1].l_fork = &shared->forks[0];
 	philos[num_philos - 1].r_fork_mutex = fork_mutexes[num_philos - 1];
 	philos[num_philos - 1].l_fork_mutex = fork_mutexes[0];
 	return (philos);
