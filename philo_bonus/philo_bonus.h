@@ -16,6 +16,7 @@ typedef struct s_shared_data {
 	sem_t *fork_pile;
 	sem_t *stdout_lock;
 	sem_t *dead_lock;
+	sem_t *check_lock;
 } t_shared_data;
 
 typedef struct s_params

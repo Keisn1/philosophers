@@ -64,9 +64,9 @@ void	print_thinking_msg(t_philo *philo)
 	pthread_mutex_unlock(philo->shared->check_lock);
 }
 
-void	print_philo_died(t_observer *observer, int idx, unsigned long long time)
+void	print_philo_died(t_observer *observer, int philo_num, unsigned long long time)
 {
 	pthread_mutex_lock(observer->shared->stdout_lock);
-	printf("%lld %d died\n", time - observer->params.base_time, idx + 1);
+	printf("%lld %d died\n", time - observer->params.base_time, philo_num);
 	pthread_mutex_unlock(observer->shared->stdout_lock);
 }
