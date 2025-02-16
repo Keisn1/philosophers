@@ -39,7 +39,11 @@ void set_semaphores(t_shared_data *shared, int num_philos) {
 		perror("sem_open failed");
 		exit(EXIT_FAILURE);
 	}
-
+	shared->meal_sem = sem_open(MEAL_SEM, O_CREAT, 0644, 0);
+	if (shared->meal_sem == SEM_FAILED) {
+		perror("sem_open failed");
+		exit(EXIT_FAILURE);
+	}
 }
 
 void unlink_semaphores() {
@@ -48,4 +52,5 @@ void unlink_semaphores() {
 	sem_unlink(STDOUT_LOCK_SEM);
 	sem_unlink(DEAD_LOCK_SEM);
 	sem_unlink(CHECK_LOCK_SEM);
+	sem_unlink(MEAL_SEM);
 }

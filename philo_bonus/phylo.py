@@ -436,30 +436,30 @@ def check_fsanitize_address():
 if __name__ == "__main__":
     test = False
     failed_tests = []
-    # if not check_if_not_dies():
-    #     test = True
-    #     failed_tests.append("check_if_not_dies")
-    # if not check_if_dies():
-    #     test = True
-    #     failed_tests.append("check_if_dies")
-    # if not check_norm():
-    #     test = True
-    #     failed_tests.append("check_norm")
-    # if not check_leaks_on_wrong_arguments():
-    #     test = True
-    #     failed_tests.append("check_leaks_on_wrong_arguments")
-    # if not check_helgraind_when_dies():
-    #     test = True
-    #     failed_tests.append("check_helgraind_when_dies")
-    # if not chec_helgrind_when_10_times_eat():
-    #     test = True
-    #     failed_tests.append("chec_helgrind_when_10_times_eat")
+    if not check_if_not_dies():
+        test = True
+        failed_tests.append("check_if_not_dies")
+    if not check_if_dies():
+        test = True
+        failed_tests.append("check_if_dies")
+    if not check_norm():
+        test = True
+        failed_tests.append("check_norm")
+    if not check_leaks_on_wrong_arguments():
+        test = True
+        failed_tests.append("check_leaks_on_wrong_arguments")
+    if not check_helgraind_when_dies():
+        test = True
+        failed_tests.append("check_helgraind_when_dies")
+    if not chec_helgrind_when_10_times_eat():
+        test = True
+        failed_tests.append("chec_helgrind_when_10_times_eat")
     if not check_fsanitize_address():
         test = True
         failed_tests.append("check_fsanitize_address")
-    # if test:
-    #     print(f"\n{RED}[SOME TESTS FAILED]{RESET}")
-    #     for i in failed_tests:
-    #         print(f"{RED}[{i}.]{RESET}")
-    # else:
-    #     print(f"\n{GREEN}[ALL TESTS PASSED]{RESET}")
+    if test:
+        print(f"\n{RED}[SOME TESTS FAILED]{RESET}")
+        for i in failed_tests:
+            print(f"{RED}[{i}.]{RESET}")
+    else:
+        print(f"\n{GREEN}[ALL TESTS PASSED]{RESET}")

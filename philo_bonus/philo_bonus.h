@@ -31,6 +31,7 @@
 # define STDOUT_LOCK_SEM "/philo_stdout_lock_sem"
 # define DEAD_LOCK_SEM "/philo_dead_lock_sem"
 # define CHECK_LOCK_SEM "/philo_check_lock_sem"
+# define MEAL_SEM "/philo_meal_sem"
 
 typedef struct s_shared_data
 {
@@ -39,6 +40,7 @@ typedef struct s_shared_data
 	sem_t				*stdout_lock;
 	sem_t				*dead_lock;
 	sem_t				*check_lock;
+	sem_t				*meal_sem;
 }						t_shared_data;
 
 typedef struct s_params
@@ -57,6 +59,7 @@ typedef struct s_philo_data
 {
 	int					philo_num;
 	unsigned long long	last_meal;
+	unsigned			meals_eaten;
 	t_shared_data		shared;
 	t_params			params;
 }						t_philo_data;
@@ -67,8 +70,8 @@ char					*validate(char **argv);
 int						get_num_philos(char *argument);
 unsigned long long		get_ull(char *argument);
 unsigned long long		get_timestamp(void);
-void set_semaphores(t_shared_data *shared, int num_philos);
-void unlink_semaphores();
+void					set_semaphores(t_shared_data *shared, int num_philos);
+void					unlink_semaphores(void);
 
 void					print_fork_msg(t_philo_data *philo_d);
 void					print_eat_msg(t_philo_data *philo_d);
