@@ -14,7 +14,7 @@ OBJ_DIR := obj
 BUILD_DIR := build
 
 SRC_FILES := $(wildcard *.c)
-OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+OBJ_FILES := $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
 
 NAME := philo
 
@@ -23,7 +23,7 @@ all:		$(NAME)
 $(NAME): $(OBJ_FILES)
 	$(CC) $(CFLAGS) $(OBJ_FILES) $(INCLUDES) -o $(NAME)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: %.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 #############
@@ -46,6 +46,8 @@ fclean:
 	rm -f $(NAME)
 
 re: fclean all
+
+.PHONY: clean fclean re
 
 #############
 # TESTING
@@ -71,4 +73,6 @@ compile_commands:
 	cmake -S . -B build -DBUILD_TEST=ON -DBUILD_PHILO=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && \
 	mv build/compile_commands.json ./compile_commands.json
 
+print_objs:
+	echo $(OBJ_FILES)
 # end
