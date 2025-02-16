@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <pthread.h>
 
 t_observer	get_observer(t_philo *philos)
 {
@@ -67,6 +68,9 @@ bool	iterate_over_philos(t_observer *observer)
 	{
 		observer->shared->philo_died = true;
 		philo_dead = true;
+		pthread_mutex_lock(observer->shared->stdout_lock);
+		printf("We have eaten enough\n");
+		pthread_mutex_unlock(observer->shared->stdout_lock);
 	}
 	return (philo_dead);
 }

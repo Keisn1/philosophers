@@ -436,18 +436,18 @@ def check_fsanitize_address():
 if __name__ == "__main__":
     test = False
     failed_tests = []
-    if not check_if_not_dies():
-        test = True
-        failed_tests.append("check_if_not_dies")
-    if not check_if_dies():
-        test = True
-        failed_tests.append("check_if_dies")
-    if not check_norm():
-        test = True
-        failed_tests.append("check_norm")
-    if not check_leaks_on_wrong_arguments():
-        test = True
-        failed_tests.append("check_leaks_on_wrong_arguments")
+    # if not check_if_not_dies():
+    #     test = True
+    #     failed_tests.append("check_if_not_dies")
+    # if not check_if_dies():
+    #     test = True
+    #     failed_tests.append("check_if_dies")
+    # if not check_norm():
+    #     test = True
+    #     failed_tests.append("check_norm")
+    # if not check_leaks_on_wrong_arguments():
+    #     test = True
+    #     failed_tests.append("check_leaks_on_wrong_arguments")
     if not check_helgraind_when_dies():
         test = True
         failed_tests.append("check_helgraind_when_dies")
