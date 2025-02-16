@@ -12,3 +12,4 @@
 /philo/compile_commands.json
 /mutex_tests/a.out
 /philo_bonus/philo
+/philo/__pycache__/
