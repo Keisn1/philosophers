@@ -44,10 +44,13 @@ void philo_routine(t_philo_data *philo_d) {
 	}
 	while (1) {
 		/* eating */
+		sem_wait(philo_d->shared.fork_lock);
 		sem_wait(philo_d->shared.fork_pile);
 		print_fork_msg(philo_d);
 		sem_wait(philo_d->shared.fork_pile);
 		print_fork_msg(philo_d);
+		sem_post(philo_d->shared.fork_lock);
+
 		print_eat_msg(philo_d);
 		while ((get_timestamp() - philo_d->last_meal) < philo_d->params.time_to_eat) {
 			usleep(100);
@@ -107,6 +110,7 @@ int	main(int argc, char **argv)
 		kill(pids[philo_num-1], SIGINT);
 		philo_num++;
 	}
+	free(pids);
 
 	int status;
 	int error;

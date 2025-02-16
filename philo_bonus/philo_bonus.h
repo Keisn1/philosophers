@@ -26,6 +26,7 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
+# define FORK_LOCK_SEM "/philo_fork_lock_sem"
 # define FORK_PILE_SEM "/philo_fork_pile_sem"
 # define STDOUT_LOCK_SEM "/philo_stdout_lock_sem"
 # define DEAD_LOCK_SEM "/philo_dead_lock_sem"
@@ -33,6 +34,7 @@
 
 typedef struct s_shared_data
 {
+	sem_t				*fork_lock;
 	sem_t				*fork_pile;
 	sem_t				*stdout_lock;
 	sem_t				*dead_lock;

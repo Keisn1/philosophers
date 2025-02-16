@@ -19,6 +19,11 @@ void	check_values_params(t_params params)
 		printf("At least 1 philo\n");
 		exit(EXIT_FAILURE);
 	}
+	if (params.num_philos > 200)
+	{
+		printf("Too many philos\n");
+		exit(EXIT_FAILURE);
+	}
 	if (params.time_to_die < 1)
 	{
 		printf("Time to die is 0\n");

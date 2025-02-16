@@ -21,7 +21,7 @@ NAME := philo
 all:		$(NAME)
 
 $(NAME): $(OBJ_FILES)
-	$(CC) $(CFLAGS) $(OBJ_FILES) $(INCLUDES) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ_FILES) $(INCLUDES) $(FSANITIZE_A) -o $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@

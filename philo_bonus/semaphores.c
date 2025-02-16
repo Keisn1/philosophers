@@ -14,6 +14,11 @@
 
 void set_semaphores(t_shared_data *shared, int num_philos) {
 
+	shared->fork_lock = sem_open(FORK_LOCK_SEM, O_CREAT, 0644, 1);
+	if (shared->fork_pile == SEM_FAILED) {
+		perror("sem_open failed");
+		exit(EXIT_FAILURE);
+	}
 	shared->fork_pile = sem_open(FORK_PILE_SEM, O_CREAT, 0644, num_philos);
 	if (shared->fork_pile == SEM_FAILED) {
 		perror("sem_open failed");
@@ -38,6 +43,7 @@ void set_semaphores(t_shared_data *shared, int num_philos) {
 }
 
 void unlink_semaphores() {
+	sem_unlink(FORK_LOCK_SEM);
 	sem_unlink(FORK_PILE_SEM);
 	sem_unlink(STDOUT_LOCK_SEM);
 	sem_unlink(DEAD_LOCK_SEM);
