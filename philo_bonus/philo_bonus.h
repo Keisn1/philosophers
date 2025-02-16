@@ -64,6 +64,12 @@ typedef struct s_philo_data
 	t_params			params;
 }						t_philo_data;
 
+typedef struct s_meal_check
+{
+	t_shared_data		shared;
+	t_params			params;
+}						t_meal_check;
+
 void					check_args(int argc, char **argv);
 int						parse(char *str, unsigned long long *nbr);
 char					*validate(char **argv);
@@ -72,10 +78,15 @@ unsigned long long		get_ull(char *argument);
 unsigned long long		get_timestamp(void);
 void					set_semaphores(t_shared_data *shared, int num_philos);
 void					unlink_semaphores(void);
+void					unlink_and_close(t_shared_data shared);
 
 void					print_fork_msg(t_philo_data *philo_d);
 void					print_eat_msg(t_philo_data *philo_d);
 void					print_sleep_msg(t_philo_data *philo_d);
 void					print_thinking_msg(t_philo_data *philo_d);
+
+void					*meal_check_routine(void *params);
+void					*observer_routine_time(void *params);
+void					philo_routine(t_philo_data *philo_d);
 
 #endif // PHILO_BONUS_H

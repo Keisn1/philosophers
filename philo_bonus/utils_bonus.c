@@ -22,8 +22,3 @@ unsigned long long	get_timestamp(void)
 		+ (unsigned long long)tv.tv_usec / 1000);
 }
 
-void	wait_for_base_time(unsigned long long base_time)
-{
-	while (get_timestamp() < base_time)
-		;
-}
