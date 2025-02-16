@@ -22,3 +22,20 @@ unsigned long long	get_timestamp(void)
 		+ (unsigned long long)tv.tv_usec / 1000);
 }
 
+void	wait_for_base_time(unsigned long long base_time)
+{
+	while (get_timestamp() < base_time)
+		usleep(100);
+}
+
+void	exit_with_msg(const char *msg)
+{
+	printf("%s\n", msg);
+	exit(EXIT_FAILURE);
+}
+
+void	perror_exit(const char *msg)
+{
+	perror(msg);
+	exit(EXIT_FAILURE);
+}

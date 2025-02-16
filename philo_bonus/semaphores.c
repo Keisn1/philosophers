@@ -33,7 +33,8 @@ void	set_semaphores(t_shared_data *shared, int num_philos)
 	if (shared->dead_lock == SEM_FAILED)
 		sem_error();
 	shared->check_lock = sem_open(CHECK_LOCK_SEM, O_CREAT, 0644, 1);
-	sem_error();
+	if (shared->check_lock == SEM_FAILED)
+		sem_error();
 	shared->meal_sem = sem_open(MEAL_SEM, O_CREAT, 0644, 0);
 	if (shared->meal_sem == SEM_FAILED)
 		sem_error();

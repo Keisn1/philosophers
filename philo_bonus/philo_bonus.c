@@ -40,13 +40,8 @@ void	*observer_routine_time(void *params)
 	while (1)
 	{
 		sem_wait(philo_d->shared.check_lock);
+		wait_for_base_time(philo_d->params.base_time);
 		time = get_timestamp();
-		if (time < philo_d->last_meal)
-		{
-			sem_post(philo_d->shared.check_lock);
-			usleep(100);
-			continue ;
-		}
 		if (time - philo_d->last_meal >= philo_d->params.time_to_die)
 		{
 			sem_wait(philo_d->shared.stdout_lock);
@@ -59,50 +54,4 @@ void	*observer_routine_time(void *params)
 		usleep(100);
 	}
 	return (NULL);
-}
-void	philo_routine(t_philo_data *philo_d)
-{
-	pthread_t	sub_thread;
-
-	pthread_create(&sub_thread, NULL, observer_routine_time, philo_d);
-	while (get_timestamp() < philo_d->params.base_time)
-	{
-		usleep(100);
-	}
-	while (1)
-	{
-		/* eating */
-		sem_wait(philo_d->shared.fork_lock);
-		sem_wait(philo_d->shared.fork_pile);
-		print_fork_msg(philo_d);
-		sem_wait(philo_d->shared.fork_pile);
-		print_fork_msg(philo_d);
-		sem_post(philo_d->shared.fork_lock);
-		print_eat_msg(philo_d);
-		while ((get_timestamp()
-				- philo_d->last_meal) < philo_d->params.time_to_eat)
-		{
-			usleep(100);
-		}
-		philo_d->meals_eaten++;
-		if (philo_d->meals_eaten == philo_d->params.must_eat)
-		{
-			sem_post(philo_d->shared.meal_sem);
-		}
-		sem_post(philo_d->shared.fork_pile);
-		sem_post(philo_d->shared.fork_pile);
-		/* sleeping */
-		print_sleep_msg(philo_d);
-		while ((get_timestamp()
-				- philo_d->last_meal) < (philo_d->params.time_to_eat
-				+ philo_d->params.time_to_sleep))
-		{
-			usleep(100);
-		}
-		/* thinking */
-		print_thinking_msg(philo_d);
-		if ((philo_d->params.time_to_die - (get_timestamp()
-					- philo_d->last_meal)) > 10)
-			usleep(1000);
-	}
 }

@@ -12,54 +12,83 @@
 
 #include "philo_bonus.h"
 
+pid_t	*launch_philos(t_params params, t_shared_data shared)
+{
+	pid_t			*pids;
+	int				philo_num;
+	pid_t			pid;
+	t_philo_data	philo_d;
+
+	pids = malloc(sizeof(pid_t) * params.num_philos);
+	if (!pids)
+		perror_exit("malloc");
+	philo_num = 1;
+	while (philo_num < params.num_philos + 1)
+	{
+		pid = fork();
+		if (pid < 0)
+			perror_exit("fork");
+		if (pid == 0)
+		{
+			philo_d = (t_philo_data){philo_num, params.base_time, 0, shared,
+				params};
+			philo_routine(&philo_d);
+			exit(EXIT_SUCCESS);
+		}
+		pids[philo_num - 1] = pid;
+		philo_num++;
+	}
+	return (pids);
+}
+
+void	kill_philos(t_params params, pid_t *pids)
+{
+	int	philo_num;
+	int	error;
+	int	status;
+
+	philo_num = 1;
+	while (philo_num < params.num_philos + 1)
+	{
+		kill(pids[philo_num - 1], SIGINT);
+		philo_num++;
+	}
+	free(pids);
+	error = waitpid(0, &status, 0);
+	if (error == -1)
+	{
+		perror("waitpid");
+		exit(EXIT_FAILURE);
+	}
+	if (!WIFSIGNALED(status))
+		exit_with_msg("Not terminated by Signal");
+	if (!(WTERMSIG(status) == SIGINT))
+		exit_with_msg("Not terminated by SIGINT");
+}
+
+void	simulation(t_params params)
+{
+	t_shared_data	shared;
+	pid_t			*pids;
+	t_meal_check	meal_check;
+	pthread_t		meal_check_thread;
+
+	set_semaphores(&shared, params.num_philos);
+	pids = launch_philos(params, shared);
+	meal_check = (t_meal_check){shared, params};
+	pthread_create(&meal_check_thread, NULL, meal_check_routine, &meal_check);
+	pthread_detach(meal_check_thread);
+	sem_wait(shared.dead_lock);
+	kill_philos(params, pids);
+}
+
 int	main(int argc, char **argv)
 {
 	t_params	params;
-	t_shared_data shared;
 
 	unlink_semaphores();
 	check_args(argc, argv);
 	params = get_params(argc, argv);
-	set_semaphores(&shared , params.num_philos);
-
-	pid_t *pids = malloc(sizeof(pid_t) * params.num_philos);
-
-	int philo_num = 1;
-	while (philo_num < params.num_philos+1) {
-		pid_t pid = fork();
-		if (pid < 0) {
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		if (pid == 0) {
-			t_philo_data philo_d = {philo_num, params.base_time, 0, shared, params};
-			philo_routine(&philo_d);
-			exit(EXIT_SUCCESS);
-		}
-		pids[philo_num-1] = pid;
-		philo_num++;
-	}
-
-	t_meal_check meal_check = {shared, params};
-	pthread_t meal_check_thread;
-	pthread_create(&meal_check_thread, NULL, meal_check_routine, &meal_check);
-	pthread_detach(meal_check_thread);
-	sem_wait(shared.dead_lock);
-
-	philo_num = 1;
-	while (philo_num < params.num_philos+1) {
-		kill(pids[philo_num-1], SIGINT);
-		philo_num++;
-	}
-	free(pids);
-
-	int status;
-	int error;
-	error =  waitpid(0 , &status, 0);
-	if (error != SIGINT) {
-		perror("waitpid");
-		exit(EXIT_FAILURE);
-	}
-
+	simulation(params);
 	return (0);
 }

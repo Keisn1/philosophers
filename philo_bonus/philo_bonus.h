@@ -59,7 +59,7 @@ typedef struct s_philo_data
 {
 	int					philo_num;
 	unsigned long long	last_meal;
-	unsigned			meals_eaten;
+	unsigned long long	meals_eaten;
 	t_shared_data		shared;
 	t_params			params;
 }						t_philo_data;
@@ -76,6 +76,8 @@ char					*validate(char **argv);
 int						get_num_philos(char *argument);
 unsigned long long		get_ull(char *argument);
 unsigned long long		get_timestamp(void);
+void					wait_for_base_time(unsigned long long base_time);
+
 void					set_semaphores(t_shared_data *shared, int num_philos);
 void					unlink_semaphores(void);
 void					unlink_and_close(t_shared_data shared);
@@ -88,5 +90,8 @@ void					print_thinking_msg(t_philo_data *philo_d);
 void					*meal_check_routine(void *params);
 void					*observer_routine_time(void *params);
 void					philo_routine(t_philo_data *philo_d);
+
+void					exit_with_msg(const char *msg);
+void					perror_exit(const char *msg);
 
 #endif // PHILO_BONUS_H
