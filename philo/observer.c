@@ -42,7 +42,7 @@ bool	check_due_time(t_observer *observer, int i)
 	if (time_since_last_meal >= observer->params.time_to_die)
 	{
 		observer->shared->philo_died = true;
-		print_philo_died(observer, i, time);
+		print_philo_died(observer, observer->philos[i].philo_num, time);
 		return (true);
 	}
 	return (false);
