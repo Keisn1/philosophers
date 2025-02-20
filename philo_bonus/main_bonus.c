@@ -50,7 +50,7 @@ void	kill_philos(t_params params, pid_t *pids)
 	philo_num = 1;
 	while (philo_num < params.num_philos + 1)
 	{
-		kill(pids[philo_num - 1], SIGINT);
+		kill(pids[philo_num - 1], SIGTERM);
 		philo_num++;
 	}
 	free(pids);
@@ -62,8 +62,8 @@ void	kill_philos(t_params params, pid_t *pids)
 	}
 	if (!WIFSIGNALED(status))
 		exit_with_msg("Not terminated by Signal");
-	if (!(WTERMSIG(status) == SIGINT))
-		exit_with_msg("Not terminated by SIGINT");
+	if (!(WTERMSIG(status) == SIGTERM))
+		exit_with_msg("Not terminated by SIGTERM");
 }
 
 void	simulation(t_params params)
@@ -80,6 +80,7 @@ void	simulation(t_params params)
 	pthread_detach(meal_check_thread);
 	sem_wait(shared.dead_lock);
 	kill_philos(params, pids);
+	unlink_and_close(shared);
 }
 
 int	main(int argc, char **argv)
