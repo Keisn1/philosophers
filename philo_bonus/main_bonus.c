@@ -79,14 +79,10 @@ void	simulation(t_params params)
 	meal_check = (t_meal_check){shared, params, false};
 	pthread_create(&meal_check_thread, NULL, meal_check_routine, &meal_check);
 	sem_wait(shared.dead_lock);
-
 	sem_wait(shared.meal_stop_sem);
 	meal_check.stop_meal_check = true;
 	sem_post(shared.meal_stop_sem);
-
 	sem_post(meal_check.shared.meal_sem);
-
-
 	pthread_join(meal_check_thread, NULL);
 	kill_philos(params, pids);
 	unlink_and_close(shared);

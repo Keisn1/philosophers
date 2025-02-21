@@ -70,7 +70,7 @@ typedef struct s_meal_check
 {
 	t_shared_data		shared;
 	t_params			params;
-	bool stop_meal_check;
+	bool				stop_meal_check;
 }						t_meal_check;
 
 void					check_args(int argc, char **argv);
