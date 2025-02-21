@@ -50,7 +50,7 @@ void	kill_philos(t_params params, pid_t *pids)
 	philo_num = 1;
 	while (philo_num < params.num_philos + 1)
 	{
-		kill(pids[philo_num - 1], SIGTERM);
+		kill(pids[philo_num - 1], SIGKILL);
 		philo_num++;
 	}
 	free(pids);
@@ -62,8 +62,8 @@ void	kill_philos(t_params params, pid_t *pids)
 	}
 	if (!WIFSIGNALED(status))
 		exit_with_msg("Not terminated by Signal");
-	if (!(WTERMSIG(status) == SIGTERM))
-		exit_with_msg("Not terminated by SIGTERM");
+	if (!(WTERMSIG(status) == SIGKILL))
+		exit_with_msg("Not terminated by SIGKILL");
 }
 
 void	simulation(t_params params)
@@ -75,10 +75,16 @@ void	simulation(t_params params)
 
 	set_semaphores(&shared, params.num_philos);
 	pids = launch_philos(params, shared);
-	meal_check = (t_meal_check){shared, params};
+	meal_check = (t_meal_check){shared, params, false};
 	pthread_create(&meal_check_thread, NULL, meal_check_routine, &meal_check);
-	pthread_detach(meal_check_thread);
 	sem_wait(shared.dead_lock);
+
+	meal_check.stop_meal_check = true;
+
+	sem_post(meal_check.shared.meal_sem);
+
+
+	pthread_join(meal_check_thread, NULL);
 	kill_philos(params, pids);
 	unlink_and_close(shared);
 }

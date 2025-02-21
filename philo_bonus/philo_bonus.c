@@ -21,9 +21,16 @@ void	*meal_check_routine(void *params)
 	count = 0;
 	while (count < meal_check->params.num_philos)
 	{
+		if (meal_check->stop_meal_check) {
+			return NULL;
+		}
 		sem_wait(meal_check->shared.meal_sem);
 		count++;
 	}
+	if (meal_check->stop_meal_check) {
+		return NULL;
+	}
+
 	sem_wait(meal_check->shared.stdout_lock);
 	printf("%llu: We have eaten enough\n", get_timestamp()
 		- meal_check->params.base_time);

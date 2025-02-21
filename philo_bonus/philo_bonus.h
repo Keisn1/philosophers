@@ -32,6 +32,7 @@
 # define DEAD_LOCK_SEM "/philo_dead_lock_sem"
 # define CHECK_LOCK_SEM "/philo_check_lock_sem"
 # define MEAL_SEM "/philo_meal_sem"
+# define MEAL_STOP_SEM "/philo_meal_sem"
 
 typedef struct s_shared_data
 {
@@ -41,6 +42,7 @@ typedef struct s_shared_data
 	sem_t				*dead_lock;
 	sem_t				*check_lock;
 	sem_t				*meal_sem;
+	sem_t				*meal_stop_sem;
 }						t_shared_data;
 
 typedef struct s_params
@@ -68,6 +70,7 @@ typedef struct s_meal_check
 {
 	t_shared_data		shared;
 	t_params			params;
+	bool stop_meal_check;
 }						t_meal_check;
 
 void					check_args(int argc, char **argv);
