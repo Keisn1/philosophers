@@ -32,7 +32,7 @@
 # define DEAD_LOCK_SEM "/philo_dead_lock_sem"
 # define CHECK_LOCK_SEM "/philo_check_lock_sem"
 # define MEAL_SEM "/philo_meal_sem"
-# define MEAL_STOP_SEM "/philo_meal_sem"
+# define MEAL_STOP_SEM "/philo_meal_stop_sem"
 
 typedef struct s_shared_data
 {

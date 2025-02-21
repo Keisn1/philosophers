@@ -38,7 +38,7 @@ void	set_semaphores(t_shared_data *shared, int num_philos)
 	shared->meal_sem = sem_open(MEAL_SEM, O_CREAT, 0644, 0);
 	if (shared->meal_sem == SEM_FAILED)
 		sem_error();
-	shared->meal_stop_sem = sem_open(MEAL_STOP_SEM, O_CREAT, 0644, 0);
+	shared->meal_stop_sem = sem_open(MEAL_STOP_SEM, O_CREAT, 0644, 1);
 	if (shared->meal_stop_sem == SEM_FAILED)
 		sem_error();
 }

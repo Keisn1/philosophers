@@ -21,12 +21,17 @@ void	*meal_check_routine(void *params)
 	count = 0;
 	while (count < meal_check->params.num_philos)
 	{
+		sem_wait(meal_check->shared.meal_stop_sem);
 		if (meal_check->stop_meal_check) {
+			sem_post(meal_check->shared.meal_stop_sem);
 			return NULL;
 		}
+		sem_post(meal_check->shared.meal_stop_sem);
+
 		sem_wait(meal_check->shared.meal_sem);
 		count++;
 	}
+
 	if (meal_check->stop_meal_check) {
 		return NULL;
 	}

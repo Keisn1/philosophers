@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+#include <semaphore.h>
 
 pid_t	*launch_philos(t_params params, t_shared_data shared)
 {
@@ -79,7 +80,9 @@ void	simulation(t_params params)
 	pthread_create(&meal_check_thread, NULL, meal_check_routine, &meal_check);
 	sem_wait(shared.dead_lock);
 
+	sem_wait(shared.meal_stop_sem);
 	meal_check.stop_meal_check = true;
+	sem_post(shared.meal_stop_sem);
 
 	sem_post(meal_check.shared.meal_sem);
 
