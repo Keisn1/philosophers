@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo_bonus.h"
+#include <semaphore.h>
 
 void	eat(t_philo_data *philo_d)
 {
@@ -20,8 +21,7 @@ void	eat(t_philo_data *philo_d)
 	print_fork_msg(philo_d);
 	sem_post(philo_d->shared.fork_lock);
 	print_eat_msg(philo_d);
-	while ((get_timestamp() - philo_d->last_meal) < philo_d->params.time_to_eat)
-		usleep(100);
+	usleep(1000 * philo_d->params.time_to_eat);
 	philo_d->meals_eaten++;
 	if (philo_d->meals_eaten == philo_d->params.must_eat)
 		sem_post(philo_d->shared.meal_sem);
@@ -32,17 +32,18 @@ void	eat(t_philo_data *philo_d)
 void	sleeping(t_philo_data *philo_d)
 {
 	print_sleep_msg(philo_d);
-	while ((get_timestamp() - philo_d->last_meal) < (philo_d->params.time_to_eat
-			+ philo_d->params.time_to_sleep))
-		usleep(100);
+	usleep(1000 * philo_d->params.time_to_sleep);
 }
 
 void	thinking(t_philo_data *philo_d)
 {
-	print_thinking_msg(philo_d);
-	if ((philo_d->params.time_to_die - (get_timestamp()
-				- philo_d->last_meal)) > 10)
-		usleep(100);
+	unsigned long long	time_to_think;
+
+	sem_wait(philo_d->shared.check_lock);
+	time_to_think = (philo_d->params.time_to_die - (get_timestamp()
+				- philo_d->last_meal)) / 2;
+	sem_post(philo_d->shared.check_lock);
+	usleep(1000 * time_to_think);
 }
 
 void	*observer_routine_time(void *params)
@@ -77,8 +78,11 @@ void	philo_routine(t_philo_data *philo_d)
 	pthread_create(&observer_thread, NULL, observer_routine_time, philo_d);
 	pthread_detach(observer_thread);
 	wait_for_base_time(philo_d->params.base_time);
+	if (philo_d->philo_num % 2 == 0)
+		usleep((philo_d->params.time_to_die / 4) * 1000);
 	while (1)
 	{
+		usleep(100 * (philo_d->philo_num / 2));
 		eat(philo_d);
 		sleeping(philo_d);
 		thinking(philo_d);

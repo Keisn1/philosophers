@@ -16,3 +16,5 @@
 /philo/obj/
 /philo_bonus/philo_bonus
 /philo_bonus/obj/
+/philo/philo.py
+/philo_bonus/philo.py
